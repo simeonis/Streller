@@ -25,13 +25,13 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{title: "Home"}}/>
-        <Stack.Screen
         name="Twitch"
         component={Twitch}
         options={{title: "Twitch"}}/>
+        <Stack.Screen
+        name="Home"
+        component={Home}
+        options={{title: "Home"}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

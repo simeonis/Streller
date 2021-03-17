@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "streller",
     "name": "streller",
     "slug": "streller",
     "version": "1.0.0",
