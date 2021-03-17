@@ -5,6 +5,7 @@ import * as AuthSession from 'expo-auth-session';
 
 // Envi
 import { TWITCH_CLIENT_ID, TWITCH_REDIRECT_URI } from "@env";
+import ChatBot from '../utils/chatbot';
 
 export const Splash = () => {
     return (
@@ -19,7 +20,10 @@ export const Home = ({route, navigation}) => {
     // State variables
     const [token, setToken] = React.useState("NULL");
     const [username, setUsername] = React.useState("NULL");
-    console.log(token);
+
+    // ChatBot
+    const chatbot = new ChatBot(route.params.username, route.params.token);
+    chatbot.join(route.params.username);
 
     // OnMount
     React.useEffect(() => {
@@ -32,6 +36,9 @@ export const Home = ({route, navigation}) => {
             <Text style={general.title}>Home Screen</Text>
             <Text>Username: {username}</Text>
             <Text>Token: {token}</Text>
+            <Button 
+            title="Test ChatBot" 
+            onPress={() => chatbot.send("This is a test message.")}/>
         </SafeAreaView>
     );
 }
