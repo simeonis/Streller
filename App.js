@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet } from 'react-native';
 
 // Screens
-import { Splash, Home, Twitch } from './screens/Screens';
+import { Splash, Home, Twitch, Channel, Controller } from './screens/Screens';
 
 export default function App() {
 
@@ -31,7 +31,15 @@ export default function App() {
         <Stack.Screen
         name="Home"
         component={Home}
-        options={{title: "Home"}}/>
+        options={{title: "Streller"}}/>
+        <Stack.Screen
+        name="Channel"
+        component={Channel}
+        options={{title: "Streller"}}/>
+        <Stack.Screen
+        name="Controller"
+        component={Controller}
+        options={{title: "Streller"}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

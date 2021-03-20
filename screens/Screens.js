@@ -1,11 +1,12 @@
-import React from 'react';
-import { Button, SafeAreaView, Text } from 'react-native';
-import { general } from '../assets/styles';
+import React, {setState} from 'react';
+import { Button, SafeAreaView, Text, View } from 'react-native';
+import { general, button, input } from '../assets/styles';
 import * as AuthSession from 'expo-auth-session';
 
 // Envi
 import { TWITCH_CLIENT_ID, TWITCH_REDIRECT_URI } from "@env";
 import ChatBot from '../utils/chatbot';
+import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 
 export const Splash = () => {
     return (
@@ -21,10 +22,6 @@ export const Home = ({route, navigation}) => {
     const [token, setToken] = React.useState("NULL");
     const [username, setUsername] = React.useState("NULL");
 
-    // ChatBot
-    const chatbot = new ChatBot(route.params.username, route.params.token);
-    chatbot.join(route.params.username);
-
     // OnMount
     React.useEffect(() => {
         setToken(route.params.token ? route.params.token : "NULL");
@@ -33,12 +30,19 @@ export const Home = ({route, navigation}) => {
 
     return (
         <SafeAreaView style={general.container}>
-            <Text style={general.title}>Home Screen</Text>
-            <Text>Username: {username}</Text>
-            <Text>Token: {token}</Text>
-            <Button 
-            title="Test ChatBot" 
-            onPress={() => chatbot.send("This is a test message.")}/>
+            <View style={general.shelf}>
+                <TouchableOpacity style={[button.round, general.shadow]} 
+                onPress={() => navigation.navigate("Channel", { token: token, username: username })}>
+                <Text style={button.text}>Play</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[button.round, general.shadow]}>
+                <Text style={button.text}>Customize</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={general.bottomTab}>
+                <Text>Username: {username}</Text>
+                <Text>Token: {token}</Text>
+            </View>
         </SafeAreaView>
     );
 }
@@ -80,7 +84,7 @@ export const Twitch = ({route, navigation}) => {
             // Valid non-expired token
             if (json.expires_in && json.expires_in > 0) {
                 navigation.navigate("Home", { token: access_token, username: json.login})
-            } 
+            }
             // Invalid token, ask for another
             else {
                 authPrompt({useProxy: true, TWITCH_REDIRECT_URI});
@@ -106,6 +110,89 @@ export const Twitch = ({route, navigation}) => {
             <Button 
             title="Validate Token" 
             onPress={() => validateToken(TEMP_TOKEN)}/>
+        </SafeAreaView>
+    );
+}
+
+export const Channel = ({route, navigation}) => {
+    // State variables
+    const [channel, setChannel] = React.useState("");
+
+    // Confirm channel
+    const confirm = () => {
+        if (channel && route.params.username && route.params.token) {
+            navigation.navigate("Controller", {
+                token: route.params.token, 
+                username: route.params.username,
+                channel: channel
+            });
+            setChannel("");
+        }
+    }
+
+    return (
+        <SafeAreaView style={general.container}>
+            <Text style={input.label}>Enter Twitch Channel</Text>
+            <TextInput 
+            style={[input.field, general.shadow]}
+            onChangeText={setChannel}
+            value={channel}
+            placeholder="Channel Name"
+            placeholderTextColor="#FFFFFF88"/>
+            <Button
+            title="Confirm"
+            onPress={confirm}/>
+        </SafeAreaView>
+    );
+}
+
+export const Controller = ({route, navigation}) => {
+
+    // State variables
+    const [channel, setChannel] = React.useState("");
+    const [message, setMessage] = React.useState("");
+    const [bot, setBot] = React.useState(null);
+
+    // OnBotUpdate
+    React.useEffect(() => {
+        if (bot) 
+            bot.join(channel);
+        // Cleanup
+        return () => {
+            if (bot) {
+                bot.leave();
+                setBot(null);
+            }
+        };
+    }, [bot]);
+
+    // OnMount
+    React.useEffect(() => {
+        if (route.params.channel) {
+            setChannel(route.params.channel);
+            setBot(new ChatBot(route.params.username, route.params.token));
+        } else setChannel("NULL");
+    }, []);
+
+    const sendMessage = (message) => {
+        if (bot && message.length > 0) {
+            bot.send(message);
+            setMessage("");
+        } else console.log("Null");
+    }
+
+    return (
+        <SafeAreaView style={general.container}>
+            <Text style={input.label}>Channel Name: {channel}</Text>
+            <TextInput 
+            style={[input.field, general.shadow]}
+            onChangeText={setMessage}
+            value={message}
+            placeholder="Message"
+            placeholderTextColor="#FFFFFF88"/>
+            <Button
+            title="Send"
+            onPress={() => sendMessage(message)}/>
         </SafeAreaView>
     );
 }
