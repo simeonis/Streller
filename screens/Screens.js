@@ -118,10 +118,43 @@ export const Login = ({route, navigation}) => {
             <Text>Username</Text>
             <TextInput style={general.textinput} placeholder="Username"/>
             <Text>Password</Text>
-            <TextInput style={general.textinput} placeholder="Password" secureTextEntry="true"/>
+            <TextInput style={general.textinput} placeholder="Password" secureTextEntry={true}/>
             <Button 
             title="Login" 
             onPress={() => navigation.navigate("Twitch")}/>
+        </SafeAreaView>
+    );
+}
+
+export const SignUp = ({route, navigation}) => {
+
+    return (
+        <SafeAreaView style={general.container}>
+            <Text style={general.title}>Sign Up</Text>
+            <Text>Username</Text>
+            <TextInput style={general.textinput} placeholder="Username"/>
+            <Text>Password</Text>
+            <TextInput style={general.textinput} placeholder="Password" secureTextEntry={true}/>
+            <Text>Confirm Password</Text>
+            <TextInput style={general.textinput} placeholder="Confirm Password" secureTextEntry={true}/>
+            <Button 
+            title="Sign Up" 
+            onPress={() => navigation.navigate("Twitch")}/>
+        </SafeAreaView>
+    );
+}
+
+export const Welcome = ({route, navigation}) => {
+
+    return (
+        <SafeAreaView style={general.container}>
+            <Text style={general.title}>Welcome</Text>
+            <Button 
+            title="Login" 
+            onPress={() => navigation.navigate("Login")}/>
+            <Button 
+            title="Sign Up" 
+            onPress={() => navigation.navigate("SignUp")}/>
         </SafeAreaView>
     );
 }
