@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, SafeAreaView, Text } from 'react-native';
+import { Button, SafeAreaView, Text, TextInput } from 'react-native';
 import { general } from '../assets/styles';
 import * as AuthSession from 'expo-auth-session';
 
@@ -38,7 +38,7 @@ export const Home = ({route, navigation}) => {
             <Text>Token: {token}</Text>
             <Button 
             title="Test ChatBot" 
-            onPress={() => chatbot.send("This is a test message.")}/>
+            onPress={() => chatbot.send("Infi says: HI!!")}/>
         </SafeAreaView>
     );
 }
@@ -106,6 +106,22 @@ export const Twitch = ({route, navigation}) => {
             <Button 
             title="Validate Token" 
             onPress={() => validateToken(TEMP_TOKEN)}/>
+        </SafeAreaView>
+    );
+}
+
+export const Login = ({route, navigation}) => {
+
+    return (
+        <SafeAreaView style={general.container}>
+            <Text style={general.title}>Login</Text>
+            <Text>Username</Text>
+            <TextInput style={general.textinput} placeholder="Username"/>
+            <Text>Password</Text>
+            <TextInput style={general.textinput} placeholder="Password" secureTextEntry="true"/>
+            <Button 
+            title="Login" 
+            onPress={() => navigation.navigate("Twitch")}/>
         </SafeAreaView>
     );
 }
