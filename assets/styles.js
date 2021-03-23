@@ -16,6 +16,20 @@ const general = StyleSheet.create({
       width:"80%",
       height:20
     },
+    controller: {
+      flex: 1,
+      flexDirection:"row",
+      backgroundColor: 'white',
+      justifyContent: "space-evenly"
+    },
+    smallButton: {
+      justifyContent:'center',
+      backgroundColor: '#DDDDDD',
+      width: 64,
+      height: 64,
+      margin: 10,
+      borderRadius: 10,
+    },
 });
 
 export { general };

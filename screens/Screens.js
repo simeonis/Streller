@@ -183,9 +183,10 @@ export const Controller = ({route, navigation}) => {
     const sendMessage = () =>{
         chatbot.send(message);
     }
+    //Message to be sent through the chatbot
     let message="Bello";
     return (
-        <SafeAreaView style={general.container}>
+        <SafeAreaView style={general.controller}>
             <SmallButton  myfunction={sendMessage}/>
         </SafeAreaView>
     );
