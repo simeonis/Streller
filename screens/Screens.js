@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, SafeAreaView, Text, TextInput } from 'react-native';
 import { general } from '../assets/styles';
 import * as AuthSession from 'expo-auth-session';
+import { BasicButton, SmallButton } from '../components/buttons';
 
 // Envi
 import { TWITCH_CLIENT_ID, TWITCH_REDIRECT_URI } from "@env";
@@ -79,7 +80,7 @@ export const Twitch = ({route, navigation}) => {
         .then((json) => {
             // Valid non-expired token
             if (json.expires_in && json.expires_in > 0) {
-                navigation.navigate("Home", { token: access_token, username: json.login})
+                navigation.navigate("Controller", { token: access_token, username: json.login})
             } 
             // Invalid token, ask for another
             else {
@@ -155,6 +156,37 @@ export const Welcome = ({route, navigation}) => {
             <Button 
             title="Sign Up" 
             onPress={() => navigation.navigate("SignUp")}/>
+            {/* to be deleted */}
+            <Button 
+            title="Straight to controller" 
+            onPress={() => navigation.navigate("Controller")}/>
+        </SafeAreaView>
+    );
+}
+
+export const Controller = ({route, navigation}) => {
+    // State variables
+    const [token, setToken] = React.useState("NULL");
+    const [username, setUsername] = React.useState("NULL");
+
+    // ChatBot
+    const chatbot = new ChatBot(route.params.username, route.params.token);
+    chatbot.join(route.params.username);
+
+    // OnMount
+    React.useEffect(() => {
+        setToken(route.params.token ? route.params.token : "NULL");
+        setUsername(route.params.username ? route.params.username : "NULL");
+    }, []);
+
+    // Chatboot Send Function
+    const sendMessage = () =>{
+        chatbot.send(message);
+    }
+    let message="Bello";
+    return (
+        <SafeAreaView style={general.container}>
+            <SmallButton  myfunction={sendMessage}/>
         </SafeAreaView>
     );
 }
