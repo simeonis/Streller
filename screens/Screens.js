@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, SafeAreaView, Text, TextInput } from 'react-native';
 import { general } from '../assets/styles';
 import * as AuthSession from 'expo-auth-session';
-import { BasicButton, SmallButton } from '../components/buttons';
+import { SmallBtn, MediumBtn, LargeBtn } from '../components/buttons';
 
 // Envi
 import { TWITCH_CLIENT_ID, TWITCH_REDIRECT_URI } from "@env";
@@ -187,7 +187,9 @@ export const Controller = ({route, navigation}) => {
     let message="Bello";
     return (
         <SafeAreaView style={general.controller}>
-            <SmallButton  myfunction={sendMessage}/>
+            <SmallBtn  myfunction={sendMessage}/>
+            <MediumBtn  myfunction={sendMessage}/>
+            <LargeBtn  myfunction={sendMessage}/>
         </SafeAreaView>
     );
 }
