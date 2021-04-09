@@ -29,12 +29,13 @@ const general = StyleSheet.create({
       height: 64,
       margin: 10,
       borderRadius: 10,
-      padding: 10
+      padding: 10,
+      
     },
     mediumButton: {
       justifyContent:'center',
-      backgroundColor: '#DDDDDD',
-      width: 128,
+      backgroundColor: '#DAF7DC',
+      width: 256,
       height: 64,
       margin: 10,
       borderRadius: 10,
@@ -42,9 +43,9 @@ const general = StyleSheet.create({
     },
     largeButton: {
       justifyContent:'center',
-      backgroundColor: '#DDDDDD',
-      width: 128,
-      height: 128,
+      backgroundColor: '#9EE493',
+      width: 256,
+      height: 256,
       margin: 10,
       borderRadius: 10,
       padding: 10
