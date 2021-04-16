@@ -41,34 +41,6 @@ const general = StyleSheet.create({
       backgroundColor: 'white',
       justifyContent: "space-evenly"
     },
-    smallButton: {
-      justifyContent:'center',
-      backgroundColor: '#DDDDDD',
-      width: 90,
-      height: 90,
-      margin: 10,
-      borderRadius: 10,
-      padding: 10,
-      
-    },
-    mediumButton: {
-      justifyContent:'center',
-      backgroundColor: '#DAF7DC',
-      width: 180,
-      height: 90,
-      margin: 10,
-      borderRadius: 10,
-      padding: 10
-    },
-    largeButton: {
-      justifyContent:'center',
-      backgroundColor: '#9EE493',
-      width: 180,
-      height: 180,
-      margin: 10,
-      borderRadius: 10,
-      padding: 10
-    },
     shadow: {
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },

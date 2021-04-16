@@ -42,7 +42,11 @@ export const Home = ({route, navigation}) => {
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={[button.round, general.shadow]}
-                    onPress={() => navigation.navigate("Workshop")}>
+                    onPress={() => setAlertOptions({
+                        visibility: true,
+                        title: "Notice", 
+                        text: "This button is under construction"
+                    })}>
                     <Text style={button.text}>Customize</Text>
                 </TouchableOpacity>
             </View>
@@ -209,15 +213,6 @@ export const Channel = ({route, navigation}) => {
     );
 }
 
-export const Workshop = () => {
-    return (
-        <SafeAreaView style={general.container}>
-            <GridView></GridView>
-        </SafeAreaView>
-    );s
-}
-
-
 export const Controller = ({route, navigation}) => {
     // State variables
     const [bot, setBot] = React.useState(null);
@@ -262,14 +257,14 @@ export const Controller = ({route, navigation}) => {
     return (
         <DismissKeyboard>
         <SafeAreaView style={general.container}>
-            <Text style={input.label}>Channel Name: {channel}</Text>
-            <TextInput 
-            style={[input.field, general.shadow]}
-            onChangeText={setMessage}
-            value={message}
-            placeholder="Send a message"
-            placeholderTextColor="#FFFFFF88"/>
-            <Button title="Chat" onPress={() => sendMessage(message)}/>
+            <GridView
+                onPress={sendMessage}
+                data={[
+                    {type: 'small', id: '1', titles: ['1', '2', '3', '4'], msg: ['Hello', 'Bye', 'Salut', 'Okay']},
+                    {type: 'medium', id: '2', titles: ['1', '2'], msg: ['Hello', 'Bye']},
+                    {type: 'large', id: '3', titles: ['1'], msg: ['Hello']},
+                ]}>
+            </GridView>
             <AlertView
                 options={alertOptions}
                 setOptions={setAlertOptions}>
