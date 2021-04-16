@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet } from 'react-native';
 
 // Screens
-import { Splash, Home, Twitch, Channel, Controller, Login, Welcome, SignUp, Controller1 } from './screens/Screens';
+import { Splash, Home, Twitch, Channel, Controller, Login, Welcome, SignUp } from './screens/Screens';
 
 export default function App() {
 
@@ -44,10 +44,6 @@ export default function App() {
         name="SignUp"
         component={SignUp}
         options={{title: "Sign Up"}}/>
-        <Stack.Screen
-        name="Controller1"
-        component={Controller1}
-        options={{title: "Controller1"}}/>
         <Stack.Screen
         name="Channel"
         component={Channel}

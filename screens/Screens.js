@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Button, SafeAreaView, Text, View, TextInput } from 'react-native';
+import { Button, SafeAreaView, Text, View } from 'react-native';
 import { general, button, input } from '../assets/styles';
 import * as AuthSession from 'expo-auth-session';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
@@ -9,7 +9,7 @@ import { SmallBtn, MediumBtn, LargeBtn } from '../components/buttons';
 
 // TwitchBot
 import { TWITCH_CLIENT_ID, TWITCH_REDIRECT_URI } from "@env";
-import ChatBot from '../utils/ChatBot';
+import ChatBot from '../utils/chatbot';
 
 export const Splash = () => {
     return (
@@ -175,10 +175,6 @@ export const Welcome = ({route, navigation}) => {
             <Button 
             title="Sign Up" 
             onPress={() => navigation.navigate("SignUp")}/>
-            {/* to be deleted */}
-            <Button 
-            title="Straight to controller" 
-            onPress={() => navigation.navigate("Controller1")}/>
         </SafeAreaView>
     );
 }
@@ -190,7 +186,7 @@ export const Channel = ({route, navigation}) => {
     // Confirm channel
     const confirm = () => {
         if (channel && route.params.username && route.params.token) {
-            navigation.navigate("Controller1", {
+            navigation.navigate("Controller", {
                 token: route.params.token, 
                 username: route.params.username,
                 channel: channel
@@ -214,36 +210,6 @@ export const Channel = ({route, navigation}) => {
             onPress={confirm}/>
         </SafeAreaView>
         </DismissKeyboard>
-    );
-}
-
-export const Controller1 = ({route, navigation}) => {
-    // State variables
-    const [token, setToken] = React.useState("NULL");
-    const [username, setUsername] = React.useState("NULL");
-
-    // ChatBot
-    const chatbot = new ChatBot(route.params.username, route.params.token);
-    chatbot.join(route.params.username);
-
-    // OnMount
-    React.useEffect(() => {
-        setToken(route.params.token ? route.params.token : "NULL");
-        setUsername(route.params.username ? route.params.username : "NULL");
-    }, []);
-
-    // Chatboot Send Function
-    const sendMessage = () =>{
-        chatbot.send(message);
-    }
-    //Message to be sent through the chatbot
-    let message="Bello";
-    return (
-        <SafeAreaView style={general.controller}>
-            <SmallBtn  myfunction={sendMessage}/>
-            <MediumBtn  myfunction={sendMessage}/>
-            <LargeBtn  myfunction={sendMessage}/>
-        </SafeAreaView>
     );
 }
 
@@ -300,6 +266,9 @@ export const Controller = ({route, navigation}) => {
             placeholder="Send a message"
             placeholderTextColor="#FFFFFF88"/>
             <Button title="Chat" onPress={() => sendMessage(message)}/>
+            <SmallBtn  myfunction={sendMessage("Small")}/>
+            <MediumBtn  myfunction={sendMessage("Medium")}/>
+            <LargeBtn  myfunction={sendMessage("Large")}/>
             <AlertView
                 options={alertOptions}
                 setOptions={setAlertOptions}>
