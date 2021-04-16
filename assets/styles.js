@@ -44,8 +44,8 @@ const general = StyleSheet.create({
     smallButton: {
       justifyContent:'center',
       backgroundColor: '#DDDDDD',
-      width: 64,
-      height: 64,
+      width: 90,
+      height: 90,
       margin: 10,
       borderRadius: 10,
       padding: 10,
@@ -54,8 +54,8 @@ const general = StyleSheet.create({
     mediumButton: {
       justifyContent:'center',
       backgroundColor: '#DAF7DC',
-      width: 256,
-      height: 64,
+      width: 180,
+      height: 90,
       margin: 10,
       borderRadius: 10,
       padding: 10
@@ -63,8 +63,8 @@ const general = StyleSheet.create({
     largeButton: {
       justifyContent:'center',
       backgroundColor: '#9EE493',
-      width: 256,
-      height: 256,
+      width: 180,
+      height: 180,
       margin: 10,
       borderRadius: 10,
       padding: 10

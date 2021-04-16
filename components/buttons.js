@@ -3,7 +3,6 @@ import { Button, Text} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { general } from '../assets/styles';
 
-
 export const SmallBtn = (props) => {
 
     return (

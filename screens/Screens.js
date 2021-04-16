@@ -5,7 +5,7 @@ import * as AuthSession from 'expo-auth-session';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import AlertView from '../components/AlertView';
 import DismissKeyboard from '../components/DismissKeyboard';
-import { SmallBtn, MediumBtn, LargeBtn } from '../components/buttons';
+import GridView from '../components/GridView';
 
 // TwitchBot
 import { TWITCH_CLIENT_ID, TWITCH_REDIRECT_URI } from "@env";
@@ -42,11 +42,7 @@ export const Home = ({route, navigation}) => {
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={[button.round, general.shadow]}
-                    onPress={() => setAlertOptions({
-                        visibility: true,
-                        title: "Notice", 
-                        text: "This button is under construction"
-                    })}>
+                    onPress={() => navigation.navigate("Workshop")}>
                     <Text style={button.text}>Customize</Text>
                 </TouchableOpacity>
             </View>
@@ -213,6 +209,14 @@ export const Channel = ({route, navigation}) => {
     );
 }
 
+export const Workshop = () => {
+    return (
+        <SafeAreaView style={general.container}>
+            <GridView></GridView>
+        </SafeAreaView>
+    );s
+}
+
 
 export const Controller = ({route, navigation}) => {
     // State variables
@@ -266,9 +270,6 @@ export const Controller = ({route, navigation}) => {
             placeholder="Send a message"
             placeholderTextColor="#FFFFFF88"/>
             <Button title="Chat" onPress={() => sendMessage(message)}/>
-            <SmallBtn  myfunction={sendMessage("Small")}/>
-            <MediumBtn  myfunction={sendMessage("Medium")}/>
-            <LargeBtn  myfunction={sendMessage("Large")}/>
             <AlertView
                 options={alertOptions}
                 setOptions={setAlertOptions}>
