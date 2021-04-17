@@ -31,8 +31,6 @@ const LargeBtn = (props) => {
 }
 
 export const GridView = (props) => {
-    const [data, setData] = useState(props.data);
-
     const buttonMap = (type, titles, msg) => {
         if (type === 'small') {
             return(
@@ -79,7 +77,7 @@ export const GridView = (props) => {
                 contentContainerStyle={{justifyContent:'space-between'}}
                 numColumns={2}
                 keyExtractor={(item) => item.id}
-                data={data}
+                data={props.data}
                 renderItem={({item}) => buttonMap(item.type, item.titles, item.msg)}
             />
         </View>

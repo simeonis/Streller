@@ -3,7 +3,6 @@ import { Button, SafeAreaView, Text, View } from 'react-native';
 import { general, button, input } from '../assets/styles';
 import * as AuthSession from 'expo-auth-session';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
-import AlertView from '../components/AlertView';
 import DismissKeyboard from '../components/DismissKeyboard';
 import GridView from '../components/GridView';
 
@@ -24,7 +23,6 @@ export const Home = ({route, navigation}) => {
     // State variables
     const [token, setToken] = useState("NULL");
     const [username, setUsername] = useState("NULL");
-    const [alertOptions, setAlertOptions] = useState({visibility: false});
 
     // OnMount
     React.useEffect(() => {
@@ -42,11 +40,7 @@ export const Home = ({route, navigation}) => {
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={[button.round, general.shadow]}
-                    onPress={() => setAlertOptions({
-                        visibility: true,
-                        title: "Notice", 
-                        text: "This button is under construction"
-                    })}>
+                    onPress={() => navigation.navigate("EditController")}>
                     <Text style={button.text}>Customize</Text>
                 </TouchableOpacity>
             </View>
@@ -54,10 +48,6 @@ export const Home = ({route, navigation}) => {
                 <Text>Username: {username}</Text>
                 <Text>Token: {token}</Text>
             </View>
-            <AlertView
-                options={alertOptions}
-                setOptions={setAlertOptions}>
-            </AlertView>
         </SafeAreaView>
     );
 }
@@ -213,12 +203,10 @@ export const Channel = ({route, navigation}) => {
     );
 }
 
-export const Controller = ({route, navigation}) => {
+export const Controller = ({route}) => {
     // State variables
     const [bot, setBot] = React.useState(null);
     const [channel, setChannel] = React.useState("");
-    const [message, setMessage] = React.useState("");
-    const [alertOptions, setAlertOptions] = useState({visibility: false, title: "", text: ""})
 
     // OnBotUpdate
     React.useEffect(() => {
@@ -243,14 +231,13 @@ export const Controller = ({route, navigation}) => {
 
     // Bot event handler
     const onNoticeHandler = (channel, msgid, message) => {
-        setAlertOptions({visibility: true, title: "Error", text: message})
+        // setAlertOptions({visibility: true, title: "Error", text: message})
     }
 
     // Bot functions
     const sendMessage = (message) => {
         if (bot && message.length > 0) {
             bot.send(message);
-            setMessage("");
         } else console.warn("Message: Empty");
     }
 
@@ -265,10 +252,27 @@ export const Controller = ({route, navigation}) => {
                     {type: 'large', id: '3', titles: ['1'], msg: ['Hello']},
                 ]}>
             </GridView>
-            <AlertView
-                options={alertOptions}
-                setOptions={setAlertOptions}>
-            </AlertView>
+        </SafeAreaView>
+        </DismissKeyboard>
+    );
+}
+
+export const EditController = () => {
+    const debugMessage = () => {
+        console.log("Button pressed")
+    }
+
+    return (
+        <DismissKeyboard>
+        <SafeAreaView style={general.container}>
+            <GridView
+                onPress={(debugMessage)}
+                data={[
+                    {type: 'small', id: '1', titles: ['1', '2', '3', '4'], msg: ['Hello', 'Bye', 'Salut', 'Okay']},
+                    {type: 'medium', id: '2', titles: ['1', '2'], msg: ['Hello', 'Bye']},
+                    {type: 'large', id: '3', titles: ['1'], msg: ['Hello']},
+                ]}>
+            </GridView>
         </SafeAreaView>
         </DismissKeyboard>
     );
