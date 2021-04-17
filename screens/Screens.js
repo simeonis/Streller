@@ -6,6 +6,8 @@ import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import AlertView from '../components/AlertView';
 import DismissKeyboard from '../components/DismissKeyboard';
 import GridView from '../components/GridView';
+import FireBase from '../utils/FireBase';
+
 
 // TwitchBot
 import { TWITCH_CLIENT_ID, TWITCH_REDIRECT_URI } from "@env";
@@ -166,6 +168,8 @@ export const SignUp = ({route, navigation}) => {
 
 export const Welcome = ({route, navigation}) => {
 
+    const fb = new FireBase();
+
     return (
         <SafeAreaView style={general.container}>
             <Text style={general.title}>Welcome</Text>
@@ -175,6 +179,9 @@ export const Welcome = ({route, navigation}) => {
             <Button 
             title="Sign Up" 
             onPress={() => navigation.navigate("SignUp")}/>
+            <Button 
+            title="Add user" 
+            onPress={() => fb.addButtonRDBS(1)}/>
         </SafeAreaView>
     );
 }
