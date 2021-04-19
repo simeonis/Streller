@@ -1,36 +1,51 @@
 import React from 'react'
 import { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, Image, Pressable } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import { useContext } from 'react';
+import { ControllerContext } from '../context/ControllerProvider';
 
 const SmallBtn = (props) => {
+    const img = require('../assets/default.png');
+
     return (
-        <TouchableOpacity style={[styles.smallButton, styles.shadow]} 
+        <TouchableOpacity style={[styles.smallButton, styles.container]} 
         onPress={props.onPress}>
-            <Text style={styles.buttonText}>{props.title}</Text>
+            <Image source={img} style={styles.buttonImg}/>
         </TouchableOpacity>
     );
 }
 
 const MediumBtn = (props) => {
+    const img = require('../assets/default.png');
+
     return (
-        <TouchableOpacity style={[styles.mediumButton, styles.shadow]} 
+        <TouchableOpacity style={[styles.mediumButton, styles.container]} 
         onPress={props.onPress}>
-            <Text style={styles.buttonText}>{props.title}</Text>
+            <Image source={img} style={styles.buttonHalfImg}/>
         </TouchableOpacity>
     );
 }
 
 const LargeBtn = (props) => {
+    const img = require('../assets/default.png');
+
     return (
-        <TouchableOpacity style={[styles.largeButton, styles.shadow]} 
-        onPress={props.onPress}>
-            <Text style={styles.buttonText}>{props.title}</Text>
-        </TouchableOpacity>
+        <Pressable 
+            style={({pressed}) => 
+                [styles.largeButton, 
+                styles.container, 
+                { backgroundColor: pressed ? '#b1f2a7' : '#9EE493' }]} 
+            onPress={props.onPress}
+            onLongPress={() => props.onLongPress("Modify Large Button")}>
+            <Image source={img} style={styles.buttonImg}/>
+        </Pressable>
     );
 }
 
 export const GridView = (props) => {
+    const { btnData, setBtnData } = useContext(ControllerContext);
+
     const buttonMap = (type, titles, msg) => {
         if (type === 'small') {
             return(
@@ -65,7 +80,9 @@ export const GridView = (props) => {
         } else if (type === 'large') {
             return(<LargeBtn 
                     onPress={() => props.onPress(msg[0])}
-                    title={titles[0]}></LargeBtn>);
+                    onLongPress={props.onLongPress}
+                    title={titles[0]}>
+                    </LargeBtn>);
         } else {
             return(<View></View>);
         }
@@ -75,10 +92,10 @@ export const GridView = (props) => {
         <View>
             <FlatList
                 contentContainerStyle={{justifyContent:'space-between'}}
-                numColumns={2}
-                keyExtractor={(item) => item.id}
-                data={props.data}
                 renderItem={({item}) => buttonMap(item.type, item.titles, item.msg)}
+                keyExtractor={(item) => item.id}
+                numColumns={2}
+                data={btnData}
             />
         </View>
     );
@@ -128,6 +145,17 @@ const styles = StyleSheet.create({
     buttonText: {
         textAlign: 'center',
         fontSize: 24,
+    },
+    buttonImg: {
+        width: '75%',
+        height: 'auto',
+        aspectRatio: 1,
+    },
+    buttonHalfImg: {
+        width: '40%',
+        height: 'auto',
+        aspectRatio: 1,
+        padding: 10,
     }
 });
 

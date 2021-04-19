@@ -66,25 +66,7 @@ const button = StyleSheet.create({
       fontSize: 18,
       fontWeight: 'bold',
       color: 'white',
-    }
-});
-
-const input = StyleSheet.create({
-    field: {
-      margin: 10,
-      padding: 2,
-      width: '80%',
-      borderWidth: 2,
-      borderRadius: 100,
-      textAlign: 'center',
-      backgroundColor: '#7289da',
-      color: 'white',
-      fontWeight: 'bold',
     },
-    label: {
-      color: 'black',
-      fontSize: 25,
-    }
 });
 
-export { general, button, input };
+export { general, button };

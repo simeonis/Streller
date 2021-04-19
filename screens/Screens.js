@@ -1,10 +1,14 @@
 import React, {useState} from 'react';
-import { Button, SafeAreaView, Text, View } from 'react-native';
-import { general, button, input } from '../assets/styles';
+import { SafeAreaView, Text, View, Pressable } from 'react-native';
+import { general, button } from '../assets/styles';
 import * as AuthSession from 'expo-auth-session';
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import DismissKeyboard from '../components/DismissKeyboard';
 import GridView from '../components/GridView';
+import AlertView from '../components/AlertView';
+import {BasicButton,  BasicInput, IconButton, VisualButton } from '../components/Drawable';
+import ImagePicker from '../components/ImagePicker';
+import { useContext } from 'react';
+import { ControllerContext } from '../context/ControllerProvider';
 
 // TwitchBot
 import { TWITCH_CLIENT_ID, TWITCH_REDIRECT_URI } from "@env";
@@ -18,36 +22,60 @@ export const Splash = () => {
     );
 }
 
-export const Home = ({route, navigation}) => {
+export const Welcome = ({route, navigation}) => {
+    const {btnData, setBtnData} = useContext(ControllerContext);
 
-    // State variables
-    const [token, setToken] = useState("NULL");
-    const [username, setUsername] = useState("NULL");
-
-    // OnMount
     React.useEffect(() => {
-        setToken(route.params.token ? route.params.token : "NULL");
-        setUsername(route.params.username ? route.params.username : "NULL");
+        setBtnData([
+            {type: 'small', id: '1', titles: ['1', '2', '3', '4'], msg: ['Hello', 'Bye', 'Salut', 'Okay']},
+            {type: 'medium', id: '2', titles: ['1', '2'], msg: ['Hello', 'Bye']},
+            {type: 'large', id: '3', titles: ['1'], msg: ['Hello']},
+        ]);
     }, []);
 
     return (
         <SafeAreaView style={general.container}>
-            <View style={general.shelf}>
-                <TouchableOpacity 
-                    style={[button.round, general.shadow]} 
-                    onPress={() => navigation.navigate("Channel", { token: token, username: username })}>
-                    <Text style={button.text}>Play</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                    style={[button.round, general.shadow]}
-                    onPress={() => navigation.navigate("EditController")}>
-                    <Text style={button.text}>Customize</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={general.bottomTab}>
-                <Text>Username: {username}</Text>
-                <Text>Token: {token}</Text>
-            </View>
+            <Text style={general.title}>Welcome</Text>
+            <BasicButton title="Login" width={200} onPress={() => navigation.navigate("Login")}/>
+            <BasicButton title="Sign Up" width={200} onPress={() => navigation.navigate("SignUp")}/>
+        </SafeAreaView>
+    );
+}
+
+export const Login = ({route, navigation}) => {
+
+    return (
+        <SafeAreaView style={general.container}>
+            <Text style={general.title}>Login</Text>
+            <Text>Username</Text>
+            <BasicInput placeholder="Username"/>
+            <Text>Password</Text>
+            <BasicInput placeholder="Password" secure={true}/>
+            <BasicButton 
+                title="Login" 
+                width={200} 
+                style={{marginTop: 16}} 
+                onPress={() => navigation.navigate("Twitch")}/>
+        </SafeAreaView>
+    );
+}
+
+export const SignUp = ({route, navigation}) => {
+
+    return (
+        <SafeAreaView style={general.container}>
+            <Text style={general.title}>Sign Up</Text>
+            <Text>Username</Text>
+            <BasicInput placeholder="Username"/>
+            <Text>Password</Text>
+            <BasicInput placeholder="Password" secure={true}/>
+            <Text>Confirm Password</Text>
+            <BasicInput placeholder="Confirm Password" secure={true}/>
+            <BasicButton 
+                title="Sign Up" 
+                width={200} 
+                style={{marginTop: 16}} 
+                onPress={() => navigation.navigate("Twitch")}/>
         </SafeAreaView>
     );
 }
@@ -112,59 +140,49 @@ export const Twitch = ({route, navigation}) => {
     return (
         <SafeAreaView style={general.container}>
             <Text style={general.title}>Twitch Screen</Text>
-            <Button 
-            title="Validate Token" 
-            onPress={() => validateToken(TEMP_TOKEN)}/>
+            <VisualButton
+                iconName="logo-twitch" 
+                iconColor="#FFFFFF"
+                color={["#6441a5", "#7e5cbd"]}
+                onPress={() => validateToken(TEMP_TOKEN)}
+                title="Link Twitch Account">
+            </VisualButton>
         </SafeAreaView>
     );
 }
 
+export const Home = ({route, navigation}) => {
 
-export const Login = ({route, navigation}) => {
+    // State variables
+    const [token, setToken] = useState("NULL");
+    const [username, setUsername] = useState("NULL");
 
-    return (
-        <SafeAreaView style={general.container}>
-            <Text style={general.title}>Login</Text>
-            <Text>Username</Text>
-            <TextInput style={general.textinput} placeholder="Username"/>
-            <Text>Password</Text>
-            <TextInput style={general.textinput} placeholder="Password" secureTextEntry={true}/>
-            <Button 
-            title="Login" 
-            onPress={() => navigation.navigate("Twitch")}/>
-        </SafeAreaView>
-    );
-}
-
-export const SignUp = ({route, navigation}) => {
+    // OnMount
+    React.useEffect(() => {
+        setToken(route.params.token ? route.params.token : "NULL");
+        setUsername(route.params.username ? route.params.username : "NULL");
+    }, []);
 
     return (
         <SafeAreaView style={general.container}>
-            <Text style={general.title}>Sign Up</Text>
-            <Text>Username</Text>
-            <TextInput style={general.textinput} placeholder="Username"/>
-            <Text>Password</Text>
-            <TextInput style={general.textinput} placeholder="Password" secureTextEntry={true}/>
-            <Text>Confirm Password</Text>
-            <TextInput style={general.textinput} placeholder="Confirm Password" secureTextEntry={true}/>
-            <Button 
-            title="Sign Up" 
-            onPress={() => navigation.navigate("Twitch")}/>
-        </SafeAreaView>
-    );
-}
-
-export const Welcome = ({route, navigation}) => {
-
-    return (
-        <SafeAreaView style={general.container}>
-            <Text style={general.title}>Welcome</Text>
-            <Button 
-            title="Login" 
-            onPress={() => navigation.navigate("Login")}/>
-            <Button 
-            title="Sign Up" 
-            onPress={() => navigation.navigate("SignUp")}/>
+            <View style={[general.shelf, {justifyContent: 'space-between'}, {width: '75%'}]}>
+                <IconButton 
+                    name="play" 
+                    size={128} 
+                    color={["#994d87", "#ad659c"]}
+                    onPress={() => navigation.navigate("Channel", { token: token, username: username })}>
+                </IconButton>
+                <IconButton 
+                    name="settings" 
+                    size={128} 
+                    color={["#514188", "#6d5ba8"]} 
+                    onPress={() => navigation.navigate("EditController")}>
+                </IconButton>
+            </View>
+            <View style={general.bottomTab}>
+                <Text>Username: {username}</Text>
+                <Text>Token: {token}</Text>
+            </View>
         </SafeAreaView>
     );
 }
@@ -188,16 +206,9 @@ export const Channel = ({route, navigation}) => {
     return (
         <DismissKeyboard>
         <SafeAreaView style={general.container}>
-            <Text style={input.label}>Enter Twitch Channel</Text>
-            <TextInput 
-            style={[input.field, general.shadow]}
-            onChangeText={setChannel}
-            value={channel}
-            placeholder="Channel Name"
-            placeholderTextColor="#FFFFFF88"/>
-            <Button
-            title="Confirm"
-            onPress={confirm}/>
+            <Text>Enter Twitch Channel</Text>
+            <BasicInput placeholder="Channel Name" text={channel} onChangeText={setChannel}/>
+            <BasicButton title="Confirm" onPress={confirm}/>
         </SafeAreaView>
         </DismissKeyboard>
     );
@@ -245,12 +256,7 @@ export const Controller = ({route}) => {
         <DismissKeyboard>
         <SafeAreaView style={general.container}>
             <GridView
-                onPress={sendMessage}
-                data={[
-                    {type: 'small', id: '1', titles: ['1', '2', '3', '4'], msg: ['Hello', 'Bye', 'Salut', 'Okay']},
-                    {type: 'medium', id: '2', titles: ['1', '2'], msg: ['Hello', 'Bye']},
-                    {type: 'large', id: '3', titles: ['1'], msg: ['Hello']},
-                ]}>
+                onPress={sendMessage}>
             </GridView>
         </SafeAreaView>
         </DismissKeyboard>
@@ -258,8 +264,16 @@ export const Controller = ({route}) => {
 }
 
 export const EditController = () => {
+    const [visibility, setVisibility] = useState(false);
+    const [title, setTitle] = useState("Hello");
+
     const debugMessage = () => {
-        console.log("Button pressed")
+        console.log("Button pressed!")
+    }
+
+    const showAlert = (title) => {
+        setVisibility(true);
+        setTitle(title);
     }
 
     return (
@@ -267,12 +281,16 @@ export const EditController = () => {
         <SafeAreaView style={general.container}>
             <GridView
                 onPress={(debugMessage)}
-                data={[
-                    {type: 'small', id: '1', titles: ['1', '2', '3', '4'], msg: ['Hello', 'Bye', 'Salut', 'Okay']},
-                    {type: 'medium', id: '2', titles: ['1', '2'], msg: ['Hello', 'Bye']},
-                    {type: 'large', id: '3', titles: ['1'], msg: ['Hello']},
-                ]}>
+                onLongPress={showAlert}>
             </GridView>
+            <AlertView
+                toggleVisibility={visibility}>
+                <Text>{title}</Text>
+                <BasicInput placeholder="Channel Name"/>
+                <BasicInput placeholder="Channel Name"/>
+                <ImagePicker></ImagePicker>
+                <BasicButton title="Close" width={200} onPress={() => setVisibility(false)}/>
+            </AlertView>
         </SafeAreaView>
         </DismissKeyboard>
     );

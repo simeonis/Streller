@@ -6,6 +6,7 @@ import { StyleSheet } from 'react-native';
 // Screens
 import { Splash, Home, Twitch, Channel, Controller, Login, Welcome, SignUp, EditController } from './screens/Screens';
 import NavBarEditController from './components/NavBarEditController';
+import { ControllerProvider } from './context/ControllerProvider';
 
 export default function App() {
 
@@ -23,6 +24,7 @@ export default function App() {
   }
 
   return (
+    <ControllerProvider>
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
@@ -40,7 +42,7 @@ export default function App() {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{ title: "Home" }} />
+          options={{ title: "Home" }, {headerShown: false}} />
         <Stack.Screen
           name="SignUp"
           component={SignUp}
@@ -62,6 +64,7 @@ export default function App() {
           } />
       </Stack.Navigator>
     </NavigationContainer>
+    </ControllerProvider>
   );
 }
 
