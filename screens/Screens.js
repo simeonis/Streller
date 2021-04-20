@@ -180,8 +180,11 @@ export const Welcome = ({route, navigation}) => {
             title="Sign Up" 
             onPress={() => navigation.navigate("SignUp")}/>
             <Button 
-            title="Add user" 
-            onPress={() => fb.addButtonRDBS(1)}/>
+            title="get button" 
+            onPress={() => fb.getAllButtons("Harry_Potter@gmail")}/>
+            <Button 
+            title="Delete button" 
+            onPress={() => fb.removeButton("Harry_Potter@gmail",4)}/>
         </SafeAreaView>
     );
 }
