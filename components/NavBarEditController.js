@@ -1,19 +1,32 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, Text } from 'react-native';
-import AlertView from './AlertView';
-import BasicButton from './Drawable';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import cat from '../assets/default/cat.png';
+import confetti from '../assets/default/confetti.png';
+import dog from '../assets/default/dog.png';
+import smile from '../assets/default/smile.png';
 import { ControllerContext } from '../context/ControllerProvider';
+import { IconButton, Row } from './Drawable';
 
 const NavBarEditController = (props) => {
-    const [visibility, setVisibility] = useState(false);
-    const {btnData, setBtnData} = useContext(ControllerContext);
+    const { btnData, setBtnData } = useContext(ControllerContext);
+
+    const randomDefault = () => {
+        let imageArr = [dog, cat, confetti, smile];
+        let random = Math.floor(Math.random() * 4);
+        return Image.resolveAssetSource(imageArr[random]).uri;
+    }
 
     const addButton = () => {
-        let list = btnData
+        let list = btnData.buttons;
         if (list.length < 10) {
-            list.push({type: 'large', id: (list.length+1), titles: ['1'], msg: ['Hello']})
-            setBtnData(list)
+            list.push({id: list.length+1, type: 'large', titles: ['Default'], msg: ['Hello from Streller!'], img: [randomDefault()]});
+            setBtnData({buttons: list});
+        }
+    }
+
+    const clearButton = () => {
+        if (btnData.buttons.length > 0) {
+            setBtnData({buttons: []});
         }
     }
 
@@ -21,21 +34,23 @@ const NavBarEditController = (props) => {
         <View>
             <View style={styles.container}>
                 <Text style={styles.title}>{props.children.title}</Text>
-                <BasicButton 
-                    title="Manage Buttons"
-                    onPress={() => setVisibility(true)}/>
+                <Row>
+                <IconButton
+                    style={{marginHorizontal: 8}}
+                    name='add-circle'
+                    size={32}
+                    color={['#47b27c', '#5bd497']}
+                    onPress={addButton}>
+                </IconButton>
+                <IconButton
+                    style={{marginHorizontal: 8}}
+                    name='trash'
+                    size={32}
+                    color={['#ff6961', '#565656']}
+                    onPress={clearButton}>
+                </IconButton>
+                </Row>
             </View>
-            <AlertView toggleVisibility={visibility}>
-                <BasicButton 
-                    title="Add"
-                    onPress={addButton}/>
-                <BasicButton 
-                    title="Clear"
-                    onPress={() => setBtnData([])}/>
-                <BasicButton 
-                    title="Close"
-                    onPress={() => setVisibility(false)}/>
-            </AlertView>
         </View>
     )
 }
@@ -49,6 +64,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 22,
+        color: '#add8e6',
     },
 })
 

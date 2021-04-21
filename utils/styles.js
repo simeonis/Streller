@@ -1,0 +1,35 @@
+import { StyleSheet } from 'react-native';
+
+const general = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#28143b',
+  },
+  topTab: {
+    position: 'absolute',
+    top: 0,
+    flexDirection: 'column',
+    padding: 10,
+  },
+  bottomTab: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    padding: 10,
+    width: '100%',
+  },
+  title: {
+    fontSize: 50,
+    color: "#FF88FF",
+  },
+  subtext: {
+    fontSize: 25,
+    color: "#5f7cf9",
+  },
+});
+
+export { general };

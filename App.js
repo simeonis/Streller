@@ -1,12 +1,12 @@
-import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
 import { StyleSheet } from 'react-native';
-
-// Screens
-import { Splash, Home, Twitch, Channel, Controller, Login, Welcome, SignUp, EditController } from './screens/Screens';
+import { StatusBar } from 'expo-status-bar';
 import NavBarEditController from './components/NavBarEditController';
 import { ControllerProvider } from './context/ControllerProvider';
+import { Channel, Controller, EditController, Home, Login, SignUp, Splash, Twitch, Welcome } from './screens/Screens';
+
 
 export default function App() {
 
@@ -26,19 +26,23 @@ export default function App() {
   return (
     <ControllerProvider>
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {backgroundColor: '#28143b', elevation: 0}, 
+          headerTitleStyle: {color: '#add8e6'},
+          headerTintColor: '#add8e6'}}>
         <Stack.Screen
           name="Welcome"
           component={Welcome}
-          options={{ title: "Welcome" }} />
+          options={{ title: "Welcome" }, {headerShown: false}} />
         <Stack.Screen
           name="Login"
           component={Login}
-          options={{ title: "Login" }} />
+          options={{ title: "Login" }, {headerShown: false}} />
         <Stack.Screen
           name="Twitch"
           component={Twitch}
-          options={{ title: "Twitch" }} />
+          options={{ title: "Twitch" }, {headerShown: false}} />
         <Stack.Screen
           name="Home"
           component={Home}
@@ -46,24 +50,25 @@ export default function App() {
         <Stack.Screen
           name="SignUp"
           component={SignUp}
-          options={{ title: "Sign Up" }} />
+          options={{ title: "Sign Up" }, {headerShown: false}} />
         <Stack.Screen
           name="Channel"
           component={Channel}
-          options={{ title: "Streller" }} />
+          options={{ title: "" }} />
         <Stack.Screen
           name="Controller"
           component={Controller}
           options={
-            { title: "Controller" }} />
+            { title: "" }} />
         <Stack.Screen
           name="EditController"
           component={EditController}
           options={
-            { headerTitle: props => <NavBarEditController>{props, { title: "Edit" }}</NavBarEditController> }
+            { headerTitle: props => <NavBarEditController>{props, { title: "Customize" }}</NavBarEditController> }
           } />
       </Stack.Navigator>
     </NavigationContainer>
+    <StatusBar style='light'></StatusBar>
     </ControllerProvider>
   );
 }

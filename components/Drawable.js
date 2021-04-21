@@ -1,13 +1,13 @@
-import React from 'react'
-import { Text, Pressable, TextInput, StyleSheet, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 export const BasicButton = (props) => {
     return (
         <Pressable
             style={({ pressed }) => [
                 styles.primary, 
-                { backgroundColor: pressed ? '#645c99' : '#443c76' },
+                { backgroundColor: pressed ? '#645c99' : '#8c9eff' },
                 { width: props.width },
                 { height: props.height },
                 props.style
@@ -40,7 +40,7 @@ export const VisualButton = (props) => {
             style={({ pressed }) => [styles.primary, { backgroundColor: pressed ? props.color[1] : props.color[0] }, props.style]}
             onPress={props.onPress}>
             {({pressed}) => (
-            <View style={styles.shelf}>
+            <View style={styles.row}>
             <Ionicons
                 style={{marginRight: 4}}
                 name={props.iconName} 
@@ -62,7 +62,31 @@ export const BasicInput = (props) => {
             value={props.text}
             secureTextEntry={props.secure}
             placeholder={props.placeholder}
-            placeholderTextColor="#00000055" />
+            placeholderTextColor="#fff4" />
+    );
+}
+
+export const DescriptiveInput = (props) => {
+    let alignment = props.textAlign ? props.textAlign : 'flex-start';
+    return (
+        <View style={[props.style, styles.column]}>
+        <Text style={[styles.label, {alignSelf: alignment}]}>{props.label}</Text>
+        <TextInput
+            style={[styles.field]}
+            onChangeText={props.onChangeText}
+            value={props.text}
+            secureTextEntry={props.secure}
+            placeholder={props.placeholder}
+            placeholderTextColor="#fff4" />
+        </View>
+    );
+}
+
+export const Row = (props) => {
+    return(
+        <View style={[styles.row, props.style]}>
+            {props.children}
+        </View>
     );
 }
 
@@ -84,13 +108,25 @@ const styles = StyleSheet.create({
         margin: 10,
         padding: 2,
         paddingHorizontal: 16,
-        width: '80%',
-        borderRadius: 32,
-        color: '#000000',
-        backgroundColor: '#f0f4f5',
+        width: '100%',
+        borderRadius: 10,
+        color: '#8c9eff',
+        backgroundColor: '#422161',
+        fontWeight: 'bold',
     },
-    shelf: {
+    label: {
+        fontWeight: 'bold',
+        alignSelf: 'flex-start',
+        color: '#5f7cf9',
+        fontSize: 20,
+    },
+    row: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    column: {
+        flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
     },

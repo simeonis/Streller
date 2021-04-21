@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Image, View, Platform, StyleSheet } from 'react-native';
 import * as ImgPicker from 'expo-image-picker';
-import BasicButton, { IconButton } from './Drawable';
-import { Ionicons } from '@expo/vector-icons'
+import React, { useEffect } from 'react';
+import { Image, Platform, StyleSheet, View } from 'react-native';
+import { IconButton, Row } from './Drawable';
 
-export default function ImagePicker() {
-    const [image, setImage] = useState(null);
-
+export default function ImagePicker(props) {
     // Ask user for Media & Camera permission
     useEffect(() => {
         (async () => {
             if (Platform.OS !== 'web') {
-                const { mediaStatus } = await ImgPicker.requestMediaLibraryPermissionsAsync();
-                const { cameraStatus } = await ImgPicker.requestCameraPermissionsAsync();
+                await ImgPicker.requestMediaLibraryPermissionsAsync();
+                await ImgPicker.requestCameraPermissionsAsync();
             }
         })();
     }, []);
@@ -22,12 +19,12 @@ export default function ImagePicker() {
         let result = await ImgPicker.launchImageLibraryAsync({
             mediaTypes: ImgPicker.MediaTypeOptions.All,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
         });
 
-        if (!result.cancelled) {
-            setImage(result.uri);
+        if (!result.cancelled && props.setImage) {
+            props.setImage(result.uri);
         }
     };
 
@@ -36,33 +33,38 @@ export default function ImagePicker() {
         let result = await ImgPicker.launchCameraAsync({
             mediaTypes: ImgPicker.MediaTypeOptions.All,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
         });
 
-        if (!result.cancelled) {
-            setImage(result.uri);
+        if (!result.cancelled && props.setImage) {
+            props.setImage(result.uri);
         }
     };
 
     return (
-        <View style={styles.shelf}>
-            <IconButton name="camera" size={64} color={["#b3b3b3", "#cfcfcf"]} onPress={takeImage}></IconButton>
-            <IconButton name="image" size={64} color={["#b3b3b3", "#cfcfcf"]} onPress={pickImage}></IconButton>
-            {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+        <View style={[styles.column, props.style]}>
+            <Image
+                source={{uri: props.image}}
+                style={[styles.display, {width: props.size}]}>
+            </Image>
+            <Row>
+                <IconButton style={{right: 6}} name="camera" size={parseInt(props.size)*0.5} color={["#5f7cf9", "#cfcfcf"]} onPress={takeImage}/>
+                <IconButton style={{left: 6}} name="image" size={parseInt(props.size)*0.5} color={["#F9DC5F", "#cfcfcf"]} onPress={pickImage}/>
+            </Row>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
-        justifyContent: 'center',
+    display: {
+      height: 'auto',
+      aspectRatio: 1,
+      borderRadius: 8,
     },
-    shelf: {
-        width: '50%',
-        flexDirection: 'row',
+    column: {
+        flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-});
+  });

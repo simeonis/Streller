@@ -1,82 +1,82 @@
-import React, {useState} from 'react';
-import { SafeAreaView, Text, View, Pressable } from 'react-native';
-import { general, button } from '../assets/styles';
-import * as AuthSession from 'expo-auth-session';
-import DismissKeyboard from '../components/DismissKeyboard';
-import GridView from '../components/GridView';
-import AlertView from '../components/AlertView';
-import {BasicButton,  BasicInput, IconButton, VisualButton } from '../components/Drawable';
-import ImagePicker from '../components/ImagePicker';
-import { useContext } from 'react';
-import { ControllerContext } from '../context/ControllerProvider';
-
 // TwitchBot
 import { TWITCH_CLIENT_ID, TWITCH_REDIRECT_URI } from "@env";
+import * as AuthSession from 'expo-auth-session';
+import React, { useContext, useState } from 'react';
+import { SafeAreaView, Text, View } from 'react-native';
+import { set } from "react-native-reanimated";
+import AlertView from '../components/AlertView';
+import DismissKeyboard from '../components/DismissKeyboard';
+import { BasicButton, DescriptiveInput, IconButton, Row, VisualButton } from '../components/Drawable';
+import GridView from '../components/GridView';
+import ImagePicker from '../components/ImagePicker';
+import { ControllerContext } from '../context/ControllerProvider';
 import ChatBot from '../utils/chatbot';
+import { general } from '../utils/styles';
 
 export const Splash = () => {
     return (
         <SafeAreaView style={general.container}>
-            <Text style={general.title}>Splash Screen</Text>
+            <Text style={general.title}>Streller</Text>
         </SafeAreaView>
     );
 }
 
 export const Welcome = ({route, navigation}) => {
-    const {btnData, setBtnData} = useContext(ControllerContext);
-
-    React.useEffect(() => {
-        setBtnData([
-            {type: 'small', id: '1', titles: ['1', '2', '3', '4'], msg: ['Hello', 'Bye', 'Salut', 'Okay']},
-            {type: 'medium', id: '2', titles: ['1', '2'], msg: ['Hello', 'Bye']},
-            {type: 'large', id: '3', titles: ['1'], msg: ['Hello']},
-        ]);
-    }, []);
-
     return (
-        <SafeAreaView style={general.container}>
-            <Text style={general.title}>Welcome</Text>
-            <BasicButton title="Login" width={200} onPress={() => navigation.navigate("Login")}/>
-            <BasicButton title="Sign Up" width={200} onPress={() => navigation.navigate("SignUp")}/>
+        <SafeAreaView style={[general.container]}>
+            <Text style={[general.title]}>Streller</Text>
+            <BasicButton style={{margin:'2%'}} title="Login" width={200} onPress={() => navigation.navigate("Login")}/>
+            <BasicButton style={{margin:'2%'}} title="Sign Up" width={200} onPress={() => navigation.navigate("SignUp")}/>
         </SafeAreaView>
     );
 }
 
 export const Login = ({route, navigation}) => {
+    const {setBtnData} = useContext(ControllerContext);
+
+    const loginIn = () => {
+        setBtnData({buttons: []});
+        navigation.navigate("Twitch");
+    }
 
     return (
+        <DismissKeyboard>
         <SafeAreaView style={general.container}>
-            <Text style={general.title}>Login</Text>
-            <Text>Username</Text>
-            <BasicInput placeholder="Username"/>
-            <Text>Password</Text>
-            <BasicInput placeholder="Password" secure={true}/>
+            <Text style={[general.title]}>Login</Text>
+            <DescriptiveInput style={{width:'75%'}} label="Email" placeholder="Enter your email"/>
+            <DescriptiveInput style={{width:'75%'}} label="Password" placeholder="Enter your password" secure={true}/>
             <BasicButton 
                 title="Login" 
                 width={200} 
                 style={{marginTop: 16}} 
-                onPress={() => navigation.navigate("Twitch")}/>
+                onPress={loginIn}/>
         </SafeAreaView>
+        </DismissKeyboard>
     );
 }
 
 export const SignUp = ({route, navigation}) => {
+    const {setBtnData} = useContext(ControllerContext);
+
+    const signUp = () => {
+        setBtnData({buttons: []});
+        navigation.navigate("Twitch");
+    }
 
     return (
+        <DismissKeyboard>
         <SafeAreaView style={general.container}>
             <Text style={general.title}>Sign Up</Text>
-            <Text>Username</Text>
-            <BasicInput placeholder="Username"/>
-            <Text>Password</Text>
-            <BasicInput placeholder="Password" secure={true}/>
-            <Text>Confirm Password</Text>
-            <BasicInput placeholder="Confirm Password" secure={true}/>
+            <DescriptiveInput style={{width:'75%'}} label="Email" placeholder="Enter your email"/>
+            <DescriptiveInput style={{width:'75%'}} label="Password" placeholder="Enter your password" secure={true}/>
+            <DescriptiveInput style={{width:'75%'}} label="Confirm Password" placeholder="Re-enter your password" secure={true}/>
             <BasicButton 
                 title="Sign Up" 
                 width={200} 
                 style={{marginTop: 16}} 
-                onPress={() => navigation.navigate("Twitch")}/>
+                onPress={signUp}/>
         </SafeAreaView>
+        </DismissKeyboard>
     );
 }
 
@@ -139,7 +139,6 @@ export const Twitch = ({route, navigation}) => {
 
     return (
         <SafeAreaView style={general.container}>
-            <Text style={general.title}>Twitch Screen</Text>
             <VisualButton
                 iconName="logo-twitch" 
                 iconColor="#FFFFFF"
@@ -165,8 +164,8 @@ export const Home = ({route, navigation}) => {
 
     return (
         <SafeAreaView style={general.container}>
-            <View style={[general.shelf, {justifyContent: 'space-between'}, {width: '75%'}]}>
-                <IconButton 
+            <Row style={{width:'75%'}}>
+                <IconButton
                     name="play" 
                     size={128} 
                     color={["#994d87", "#ad659c"]}
@@ -178,10 +177,10 @@ export const Home = ({route, navigation}) => {
                     color={["#514188", "#6d5ba8"]} 
                     onPress={() => navigation.navigate("EditController")}>
                 </IconButton>
-            </View>
+            </Row>
             <View style={general.bottomTab}>
-                <Text>Username: {username}</Text>
-                <Text>Token: {token}</Text>
+                <Text style={{color:'#fff'}}>Username: {username}</Text>
+                <Text style={{color:'#fff'}}>Token: {token}</Text>
             </View>
         </SafeAreaView>
     );
@@ -206,9 +205,8 @@ export const Channel = ({route, navigation}) => {
     return (
         <DismissKeyboard>
         <SafeAreaView style={general.container}>
-            <Text>Enter Twitch Channel</Text>
-            <BasicInput placeholder="Channel Name" text={channel} onChangeText={setChannel}/>
-            <BasicButton title="Confirm" onPress={confirm}/>
+            <DescriptiveInput style={{width:'75%'}} textAlign='center' label="Enter Twitch Channel" placeholder="Channel Name" text={channel} onChangeText={setChannel}/>
+            <BasicButton width={'75%'} title="Confirm" onPress={confirm}/>
         </SafeAreaView>
         </DismissKeyboard>
     );
@@ -256,6 +254,7 @@ export const Controller = ({route}) => {
         <DismissKeyboard>
         <SafeAreaView style={general.container}>
             <GridView
+                onLongPress={() => {}}
                 onPress={sendMessage}>
             </GridView>
         </SafeAreaView>
@@ -264,32 +263,62 @@ export const Controller = ({route}) => {
 }
 
 export const EditController = () => {
+    const {btnData, setBtnData} = useContext(ControllerContext);
     const [visibility, setVisibility] = useState(false);
-    const [title, setTitle] = useState("Hello");
+    const [title, setTitle] = useState("");
+    const [message, setMessage] = useState("");
+    const [image, setImage] = useState(null);
+    const [index, setIndex] = useState([]);
 
-    const debugMessage = () => {
-        console.log("Button pressed!")
+    // ID: [buttonID, subButtonID]
+    const showAlert = (id) => {
+        setIndex(id);
+        setTitle(btnData.buttons[id[0]-1].titles[id[1]]);
+        setMessage(btnData.buttons[id[0]-1].msg[id[1]]);
+        setImage(btnData.buttons[id[0]-1].img[id[1]]);
+        setVisibility(true);
     }
 
-    const showAlert = (title) => {
-        setVisibility(true);
-        setTitle(title);
+    const closeAlert = () => {
+        setVisibility(false);
+        setImage(null);
+    }
+
+    // Updates button data
+    const applyChanges = () => {
+        // Update button image
+        if (image && index.length > 0) {
+            btnData.buttons[index[0]-1].img[index[1]] = image;
+        }
+        // Update button message
+        if (message !== "") {
+            btnData.buttons[index[0]-1].msg[index[1]] = message;
+        }
+        // Update button title
+        if (title !== "") {
+            btnData.buttons[index[0]-1].titles[index[1]] = title;
+        }
     }
 
     return (
         <DismissKeyboard>
         <SafeAreaView style={general.container}>
             <GridView
-                onPress={(debugMessage)}
+                onPress={() => {}}
                 onLongPress={showAlert}>
             </GridView>
             <AlertView
                 toggleVisibility={visibility}>
-                <Text>{title}</Text>
-                <BasicInput placeholder="Channel Name"/>
-                <BasicInput placeholder="Channel Name"/>
-                <ImagePicker></ImagePicker>
-                <BasicButton title="Close" width={200} onPress={() => setVisibility(false)}/>
+                <ImagePicker
+                    size={'100%'}
+                    image={image} 
+                    setImage={setImage}/>
+                <DescriptiveInput  style={{width: '75%'}} label="Title" placeholder={"Enter Button Title"} text={title} onChangeText={setTitle}/>
+                <DescriptiveInput style={{width: '75%'}} label="Message" placeholder="Enter Button Output" text={message} onChangeText={setMessage}/>
+                <Row style={{width:'100%', marginTop: '5%'}}>
+                <BasicButton title="Apply" width={'46%'} onPress={applyChanges}/>
+                <BasicButton title="Close" width={'46%'} onPress={closeAlert}/>
+                </Row>
             </AlertView>
         </SafeAreaView>
         </DismissKeyboard>

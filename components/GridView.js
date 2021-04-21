@@ -1,44 +1,43 @@
-import React from 'react'
-import { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Image, Pressable } from 'react-native';
+import React, { useContext } from 'react';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { useContext } from 'react';
 import { ControllerContext } from '../context/ControllerProvider';
 
 const SmallBtn = (props) => {
-    const img = require('../assets/default.png');
-
     return (
-        <TouchableOpacity style={[styles.smallButton, styles.container]} 
-        onPress={props.onPress}>
-            <Image source={img} style={styles.buttonImg}/>
-        </TouchableOpacity>
+        <Pressable 
+            style={({pressed}) => 
+                [styles.smallButton, styles.container, 
+                { borderColor: pressed ? '#8c9eff' : '#28143b' }]} 
+            onPress={props.onPress}
+            onLongPress={props.onLongPress}>
+            <Image source={{uri: props.image}} style={styles.buttonImg}/>
+        </Pressable>
     );
 }
 
 const MediumBtn = (props) => {
-    const img = require('../assets/default.png');
-
     return (
-        <TouchableOpacity style={[styles.mediumButton, styles.container]} 
-        onPress={props.onPress}>
-            <Image source={img} style={styles.buttonHalfImg}/>
-        </TouchableOpacity>
+        <Pressable 
+            style={({pressed}) => 
+                [styles.mediumButton, styles.container, 
+                { borderColor: pressed ? '#8c9eff' : '#28143b' }]} 
+            onPress={props.onPress}
+            onLongPress={props.onLongPress}>
+            <Image source={{uri: props.image}} style={[styles.buttonHalfImg]}/>
+        </Pressable>
     );
 }
 
 const LargeBtn = (props) => {
-    const img = require('../assets/default.png');
-
     return (
         <Pressable 
             style={({pressed}) => 
-                [styles.largeButton, 
-                styles.container, 
-                { backgroundColor: pressed ? '#b1f2a7' : '#9EE493' }]} 
+                [styles.largeButton, styles.container,
+                { borderColor: pressed ? '#8c9eff' : '#28143b' }]}
             onPress={props.onPress}
-            onLongPress={() => props.onLongPress("Modify Large Button")}>
-            <Image source={img} style={styles.buttonImg}/>
+            onLongPress={props.onLongPress}>
+            <Image source={{uri: props.image}} style={styles.buttonImg}/>
         </Pressable>
     );
 }
@@ -46,57 +45,81 @@ const LargeBtn = (props) => {
 export const GridView = (props) => {
     const { btnData, setBtnData } = useContext(ControllerContext);
 
-    const buttonMap = (type, titles, msg) => {
+    const sendMessage = (message) => {
+        props.onPress(message);
+    }
+
+    const buttonMap = (id, type, titles, messages, images) => {
         if (type === 'small') {
             return(
                 <View>
                     <View style={styles.container}>
-                        <SmallBtn
-                            onPress={() => props.onPress(msg[0])}
-                            title={titles[0]}></SmallBtn>
+                    <SmallBtn 
+                            onPress={() => sendMessage(messages[0])}
+                            onLongPress={() => props.onLongPress([id, 0])}
+                            title={titles[0]}
+                            image={images[0]}>
+                        </SmallBtn>
                         <SmallBtn 
-                            onPress={() => props.onPress(msg[1])}
-                            title={titles[1]}></SmallBtn>
+                            onPress={() => sendMessage(messages[1])}
+                            onLongPress={() => props.onLongPress([id, 1])}
+                            title={titles[1]}
+                            image={images[1]}>
+                        </SmallBtn>
                     </View>
                     <View style={styles.container}>
+                    <SmallBtn 
+                            onPress={() => sendMessage(messages[2])}
+                            onLongPress={() => props.onLongPress([id, 2])}
+                            title={titles[2]}
+                            image={images[2]}>
+                        </SmallBtn>
                         <SmallBtn 
-                            onPress={() => props.onPress(msg[2])}
-                            title={titles[2]}></SmallBtn>
-                        <SmallBtn 
-                            onPress={() => props.onPress(msg[3])}
-                            title={titles[3]}></SmallBtn>
+                            onPress={() => sendMessage(messages[3])}
+                            onLongPress={() => props.onLongPress([id, 3])}
+                            title={titles[3]}
+                            image={images[3]}>
+                        </SmallBtn>
                     </View>
                 </View>);
         } else if (type === 'medium') {
             return(
                 <View>
-                    <MediumBtn 
-                        onPress={() => props.onPress(msg[0])}
-                        title={titles[0]}></MediumBtn>
                     <MediumBtn
-                        onPress={() => props.onPress(msg[1])}
-                        title={titles[1]}></MediumBtn>
+                        onPress={() => sendMessage(messages[0])}
+                        onLongPress={() => props.onLongPress([id, 0])}
+                        title={titles[0]}
+                        image={images[0]}>
+                    </MediumBtn>
+                    <MediumBtn
+                        onPress={() => sendMessage(messages[1])}
+                        onLongPress={() => props.onLongPress([id, 1])}
+                        title={titles[1]}
+                        image={images[1]}>
+                    </MediumBtn>
                 </View>);
         } else if (type === 'large') {
             return(<LargeBtn 
-                    onPress={() => props.onPress(msg[0])}
-                    onLongPress={props.onLongPress}
-                    title={titles[0]}>
+                    onPress={() => sendMessage(messages[0])}
+                    onLongPress={() => props.onLongPress([id, 0])}
+                    title={titles[0]}
+                    image={images[0]}>
                     </LargeBtn>);
         } else {
-            return(<View></View>);
+            return;
         }
     }
 
     return(
-        <View>
+        <View style={[styles.container]}>
+            <View>
             <FlatList
-                contentContainerStyle={{justifyContent:'space-between'}}
-                renderItem={({item}) => buttonMap(item.type, item.titles, item.msg)}
+                data={btnData.buttons}
+                renderItem={({item}) => buttonMap(item.id, item.type, item.titles, item.msg, item.img)}
                 keyExtractor={(item) => item.id}
                 numColumns={2}
-                data={btnData}
             />
+            </View>
         </View>
     );
 }
@@ -104,58 +127,56 @@ export const GridView = (props) => {
 const styles = StyleSheet.create({
     container: {
         display: 'flex',
-        flexDirection:"row",
+        flexDirection: 'row',
         justifyContent: "center",
-        alignItems: 'center',
-    },
-    shadow: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 4,
+        alignItems: "center",
     },
     smallButton: {
-        justifyContent:'center',
-        backgroundColor: '#DDDDDD',
         width: 82,
         height: 82,
-        borderRadius: 10,
-        padding: 10,
         margin: 8,
+        borderWidth: 3,
+        backgroundColor: '#422161',
+        borderColor:'#28143b',
+        borderRadius: 10,
     },
     mediumButton: {
-        justifyContent:'center',
-        backgroundColor: '#DAF7DC',
         width: 180,
         height: 82,
         borderRadius: 10,
-        padding: 8,
         margin: 8,
+        borderWidth: 3,
+        backgroundColor: '#422161',
+        borderColor:'#28143b',
+        borderRadius: 10,
     },
     largeButton: {
-        justifyContent:'center',
-        backgroundColor: '#9EE493',
+        alignSelf: 'flex-start',
         width: 180,
         height: 180,
-        borderRadius: 10,
-        padding: 8,
         margin: 8,
+        borderWidth: 3,
+        backgroundColor: '#422161',
+        borderColor:'#28143b',
+        borderRadius: 10,
     },
     buttonText: {
         textAlign: 'center',
         fontSize: 24,
     },
     buttonImg: {
-        width: '75%',
+        width: '100%',
         height: 'auto',
         aspectRatio: 1,
+        borderRadius: 6,
+        overflow: 'hidden',
     },
     buttonHalfImg: {
-        width: '40%',
+        width: '100%',
         height: 'auto',
-        aspectRatio: 1,
-        padding: 10,
+        aspectRatio: 2.2,
+        borderRadius: 6,
+        overflow: 'hidden',
     }
 });
 

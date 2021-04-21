@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, Modal, StyleSheet } from 'react-native';
+import React from 'react';
+import { Modal, StyleSheet, View } from 'react-native';
 
 const AlertView = ({children, toggleVisibility}) => {
     return (
@@ -9,7 +9,7 @@ const AlertView = ({children, toggleVisibility}) => {
                 transparent={true}
                 visible={toggleVisibility}>
                 <View style = {styles.centerView}>
-                    <View style = {[styles.modalView, styles.shadow, {backgroundColor: '#FFFFFF'}]}>
+                    <View style = {[styles.modalView, styles.shadow, {backgroundColor: '#28143b'}]}>
                         {children}
                     </View>
                 </View>
@@ -28,10 +28,10 @@ const styles = StyleSheet.create({
     },
     modalView: {
         width: '80%',
-        margin: 10,
+        margin: 8,
         backgroundColor: '#FFFFFF',
         borderRadius: 10,
-        padding: 15,
+        padding: 12,
         alignItems: 'center',
     },
     shadow: {
