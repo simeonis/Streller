@@ -32,10 +32,11 @@ export const Welcome = ({route, navigation}) => {
 }
 
 export const Login = ({route, navigation}) => {
-    const {setUserInfo} = useContext(ControllerContext);
+    const {updateUserInfo, updateUserID} = useContext(ControllerContext);
 
     const loginIn = () => {
-        setUserInfo({buttons: []});
+        updateUserID('');
+        updateUserInfo({buttons: [], email:'', token: "2m9m5crfbuoptntx1jchdjrr65jocr"});
         navigation.navigate("Twitch");
     }
 
@@ -56,10 +57,11 @@ export const Login = ({route, navigation}) => {
 }
 
 export const SignUp = ({route, navigation}) => {
-    const {setUserInfo} = useContext(ControllerContext);
+    const {updateUserInfo, updateUserID} = useContext(ControllerContext);
 
     const signUp = () => {
-        setUserInfo({buttons: []});
+        updateUserID('');
+        updateUserInfo({buttons: [], email:'', token: ''});
         navigation.navigate("Twitch");
     }
 
@@ -82,14 +84,13 @@ export const SignUp = ({route, navigation}) => {
 
 export const Twitch = ({route, navigation}) => {
 
+    const {userInfo, updateUserInfo} = useContext(ControllerContext);
+
     // Twitch API
     const TWITCH_SCOPES = ["chat:edit", "chat:read"];
     const TWITCH_BASE_URL = "https://id.twitch.tv/oauth2/";
     const TWITCH_AUTH_PATH = "authorize";
     const TWITCH_VALID_PATH = "validate";
-
-    // Temporary (Missing DataBase)
-    let TEMP_TOKEN = "2m9m5crfbuoptntx1jchdjrr65jocr";
 
     // Generate new token
     const [authRequest, authResponse, authPrompt] = AuthSession.useAuthRequest(
@@ -133,7 +134,8 @@ export const Twitch = ({route, navigation}) => {
         // AuthRequest result
         if (authResponse?.type === 'success') {
             const { access_token } = authResponse.params;
-            TEMP_TOKEN = access_token;
+            userInfo.token = access_token;
+            updateUserInfo(userInfo);
         }
     }, [authResponse]);
 
@@ -143,8 +145,8 @@ export const Twitch = ({route, navigation}) => {
                 iconName="logo-twitch" 
                 iconColor="#FFFFFF"
                 color={["#6441a5", "#7e5cbd"]}
-                onPress={() => validateToken(TEMP_TOKEN)}
-                title="Link Twitch Account">
+                onPress={() => validateToken(userInfo.token)}
+                title={userInfo.token === '' ? "Link Twitch Account" : "Verify Twitch Token"}>
             </VisualButton>
         </SafeAreaView>
     );
@@ -155,11 +157,17 @@ export const Home = ({route, navigation}) => {
     // State variables
     const [token, setToken] = useState("NULL");
     const [username, setUsername] = useState("NULL");
+    const {userInfo, updateUserInfo, updateUserID} = useContext(ControllerContext);
 
     // OnMount
     React.useEffect(() => {
-        setToken(route.params.token ? route.params.token : "NULL");
-        setUsername(route.params.username ? route.params.username : "NULL");
+        if (route.params.token) {
+            setToken(route.params.token);
+            userInfo.token = route.params.token;
+            updateUserInfo(userInfo);
+        } if (route.params.username) {
+            setUsername(route.params.username);
+        }
     }, []);
 
     return (
@@ -283,7 +291,7 @@ export const Controller = ({route, navigation}) => {
 }
 
 export const EditController = () => {
-    const {userInfo, setUserInfo} = useContext(ControllerContext);
+    const {userInfo, updateUserInfo} = useContext(ControllerContext);
     const [visibility, setVisibility] = useState(false);
     const [title, setTitle] = useState("");
     const [message, setMessage] = useState("");
@@ -334,6 +342,8 @@ export const EditController = () => {
                     }
                 }
             }
+
+            updateUserInfo(userInfo);
         }
 
         closeAlert();
