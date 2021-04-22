@@ -3,7 +3,7 @@ import { TWITCH_CLIENT_ID, TWITCH_REDIRECT_URI } from "@env";
 import * as AuthSession from 'expo-auth-session';
 import React, { useContext, useState } from 'react';
 import { SafeAreaView, Text, View } from 'react-native';
-import { set } from "react-native-reanimated";
+import { RadioButton } from 'react-native-paper';
 import AlertView from '../components/AlertView';
 import DismissKeyboard from '../components/DismissKeyboard';
 import { BasicButton, DescriptiveInput, IconButton, Row, VisualButton } from '../components/Drawable';
@@ -267,6 +267,7 @@ export const EditController = () => {
     const [visibility, setVisibility] = useState(false);
     const [title, setTitle] = useState("");
     const [message, setMessage] = useState("");
+    const [type, setType] = useState("");
     const [image, setImage] = useState(null);
     const [index, setIndex] = useState([]);
 
@@ -282,22 +283,40 @@ export const EditController = () => {
     const closeAlert = () => {
         setVisibility(false);
         setImage(null);
+        setType("");
     }
 
     // Updates button data
     const applyChanges = () => {
-        // Update button image
-        if (image && index.length > 0) {
-            btnData.buttons[index[0]-1].img[index[1]] = image;
+        if (index && index.length > 0) {
+            // Update button image
+            if (image) {
+                btnData.buttons[index[0]-1].img[index[1]] = image;
+            }
+            // Update button message
+            if (message !== "") {
+                btnData.buttons[index[0]-1].msg[index[1]] = message;
+            }
+            // Update button title
+            if (title !== "") {
+                btnData.buttons[index[0]-1].titles[index[1]] = title;
+            }
+            // Update button type
+            if (type !== "") {
+                if (type !== "delete") {
+                    btnData.buttons[index[0]-1].type = type;
+                } else {
+                    // Remove button by index
+                    btnData.buttons.splice(index[0]-1, 1);
+                    // Re-calculate all buttons indexes
+                    for (let i=0; i<btnData.buttons.length; i++) {
+                        btnData.buttons[i].id = i+1;
+                    }
+                }
+            }
         }
-        // Update button message
-        if (message !== "") {
-            btnData.buttons[index[0]-1].msg[index[1]] = message;
-        }
-        // Update button title
-        if (title !== "") {
-            btnData.buttons[index[0]-1].titles[index[1]] = title;
-        }
+
+        closeAlert();
     }
 
     return (
@@ -315,7 +334,27 @@ export const EditController = () => {
                     setImage={setImage}/>
                 <DescriptiveInput  style={{width: '75%'}} label="Title" placeholder={"Enter Button Title"} text={title} onChangeText={setTitle}/>
                 <DescriptiveInput style={{width: '75%'}} label="Message" placeholder="Enter Button Output" text={message} onChangeText={setMessage}/>
-                <Row style={{width:'100%', marginTop: '5%'}}>
+                <RadioButton.Group onValueChange={newValue => setType(newValue)} value={type}>
+                    <Row style={{width: '100%', padding:'4%'}}>
+                        <View style={general.container}>
+                            <Text style={{color:'#a4c639', fontWeight: 'bold'}}>Small</Text>
+                            <RadioButton uncheckedColor="#8c9eff" color='#f99e1a' value="small" />
+                        </View>
+                        <View style={general.container}>
+                            <Text style={{color:'#a4c639', fontWeight: 'bold'}}>Medium</Text>
+                            <RadioButton uncheckedColor="#8c9eff" color='#f99e1a' value="medium" />
+                        </View>
+                        <View style={general.container}>
+                            <Text style={{color:'#a4c639', fontWeight: 'bold'}}>Large</Text>
+                            <RadioButton uncheckedColor="#8c9eff" color='#f99e1a' value="large" />
+                        </View>
+                        <View style={general.container}>
+                            <Text style={{color:'#ff6961', fontWeight: 'bold'}}>Delete</Text>
+                            <RadioButton uncheckedColor="#8c9eff" color='#f99e1a' value="delete" />
+                        </View>
+                    </Row>
+                </RadioButton.Group>
+                <Row style={{width:'100%'}}>
                 <BasicButton title="Apply" width={'46%'} onPress={applyChanges}/>
                 <BasicButton title="Close" width={'46%'} onPress={closeAlert}/>
                 </Row>
