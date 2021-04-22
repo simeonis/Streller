@@ -41,6 +41,7 @@ const general = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
     marginVertical: 8,
+    width:'100%',
   },
 });
 

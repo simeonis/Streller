@@ -242,19 +242,24 @@ export const Controller = ({route, navigation}) => {
         } else setChannel("");
     }, []);
 
-    // Bot event handler
-    const onNoticeHandler = (channel, msgid, message) => {
+    const showAlert = (title, message) => {
         setVisibility(true);
         setTitle("Warning");
         setMessage(message);
-        // setAlertOptions({visibility: true, title: "Error", text: message})
+    }
+
+    // Bot event handler
+    const onNoticeHandler = (channel, msgid, message) => {
+        showAlert('Warning', message);
     }
 
     // Bot functions
     const sendMessage = (message) => {
-        if (bot && message.length > 0) {
+        if (bot && message && message.length > 0) {
             bot.send(message);
-        } else console.warn("Message: Empty");
+        } else {
+            showAlert('Warning', 'Invalid message.');
+        }
     }
 
     return (
