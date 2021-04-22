@@ -32,10 +32,10 @@ export const Welcome = ({route, navigation}) => {
 }
 
 export const Login = ({route, navigation}) => {
-    const {setBtnData} = useContext(ControllerContext);
+    const {setUserInfo} = useContext(ControllerContext);
 
     const loginIn = () => {
-        setBtnData({buttons: []});
+        setUserInfo({buttons: []});
         navigation.navigate("Twitch");
     }
 
@@ -56,10 +56,10 @@ export const Login = ({route, navigation}) => {
 }
 
 export const SignUp = ({route, navigation}) => {
-    const {setBtnData} = useContext(ControllerContext);
+    const {setUserInfo} = useContext(ControllerContext);
 
     const signUp = () => {
-        setBtnData({buttons: []});
+        setUserInfo({buttons: []});
         navigation.navigate("Twitch");
     }
 
@@ -212,7 +212,7 @@ export const Channel = ({route, navigation}) => {
     );
 }
 
-export const Controller = ({route}) => {
+export const Controller = ({route, navigation}) => {
     // State variables
     const [bot, setBot] = useState(null);
     const [channel, setChannel] = useState("");
@@ -237,6 +237,7 @@ export const Controller = ({route}) => {
     React.useEffect(() => {
         if (route.params.channel) {
             setChannel(route.params.channel.toLowerCase());
+            navigation.setOptions({title: route.params.channel ? route.params.channel : ""})
             setBot(new ChatBot(route.params.username, route.params.token, onNoticeHandler));
         } else setChannel("");
     }, []);
@@ -277,7 +278,7 @@ export const Controller = ({route}) => {
 }
 
 export const EditController = () => {
-    const {btnData, setBtnData} = useContext(ControllerContext);
+    const {userInfo, setUserInfo} = useContext(ControllerContext);
     const [visibility, setVisibility] = useState(false);
     const [title, setTitle] = useState("");
     const [message, setMessage] = useState("");
@@ -288,9 +289,9 @@ export const EditController = () => {
     // ID: [buttonID, subButtonID]
     const showAlert = (id) => {
         setIndex(id);
-        setTitle(btnData.buttons[id[0]-1].titles[id[1]]);
-        setMessage(btnData.buttons[id[0]-1].msg[id[1]]);
-        setImage(btnData.buttons[id[0]-1].img[id[1]]);
+        setTitle(userInfo.buttons[id[0]-1].titles[id[1]]);
+        setMessage(userInfo.buttons[id[0]-1].msg[id[1]]);
+        setImage(userInfo.buttons[id[0]-1].img[id[1]]);
         setVisibility(true);
     }
 
@@ -305,26 +306,26 @@ export const EditController = () => {
         if (index && index.length > 0) {
             // Update button image
             if (image) {
-                btnData.buttons[index[0]-1].img[index[1]] = image;
+                userInfo.buttons[index[0]-1].img[index[1]] = image;
             }
             // Update button message
             if (message !== "") {
-                btnData.buttons[index[0]-1].msg[index[1]] = message;
+                userInfo.buttons[index[0]-1].msg[index[1]] = message;
             }
             // Update button title
             if (title !== "") {
-                btnData.buttons[index[0]-1].titles[index[1]] = title;
+                userInfo.buttons[index[0]-1].titles[index[1]] = title;
             }
             // Update button type
             if (type !== "") {
                 if (type !== "delete") {
-                    btnData.buttons[index[0]-1].type = type;
+                    userInfo.buttons[index[0]-1].type = type;
                 } else {
                     // Remove button by index
-                    btnData.buttons.splice(index[0]-1, 1);
+                    userInfo.buttons.splice(index[0]-1, 1);
                     // Re-calculate all buttons indexes
-                    for (let i=0; i<btnData.buttons.length; i++) {
-                        btnData.buttons[i].id = i+1;
+                    for (let i=0; i<userInfo.buttons.length; i++) {
+                        userInfo.buttons[i].id = i+1;
                     }
                 }
             }

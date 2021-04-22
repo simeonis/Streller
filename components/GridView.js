@@ -43,7 +43,7 @@ const LargeBtn = (props) => {
 }
 
 export const GridView = (props) => {
-    const { btnData, setBtnData } = useContext(ControllerContext);
+    const { userInfo } = useContext(ControllerContext);
 
     const sendMessage = (message) => {
         props.onPress(message);
@@ -114,7 +114,7 @@ export const GridView = (props) => {
         <View style={[styles.container]}>
             <View>
             <FlatList
-                data={btnData.buttons}
+                data={userInfo.buttons}
                 renderItem={({item}) => buttonMap(item.id, item.type, item.titles, item.msg, item.img)}
                 keyExtractor={(item) => item.id}
                 numColumns={2}

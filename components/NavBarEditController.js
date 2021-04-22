@@ -8,7 +8,7 @@ import { ControllerContext } from '../context/ControllerProvider';
 import { IconButton, Row } from './Drawable';
 
 const NavBarEditController = (props) => {
-    const { btnData, setBtnData } = useContext(ControllerContext);
+    const { userInfo, setUserInfo } = useContext(ControllerContext);
 
     const randomDefault = () => {
         let imageArr = [dog, cat, confetti, smile];
@@ -17,16 +17,16 @@ const NavBarEditController = (props) => {
     }
 
     const addButton = () => {
-        let list = btnData.buttons;
+        let list = userInfo.buttons;
         if (list.length < 10) {
             list.push({id: list.length+1, type: 'large', titles: ['Default'], msg: ['Hello from Streller!'], img: [randomDefault()]});
-            setBtnData({buttons: list});
+            setUserInfo({buttons: list});
         }
     }
 
     const clearButton = () => {
-        if (btnData.buttons.length > 0) {
-            setBtnData({buttons: []});
+        if (userInfo.buttons.length > 0) {
+            setUserInfo({buttons: []});
         }
     }
 
