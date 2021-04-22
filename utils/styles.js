@@ -30,6 +30,18 @@ const general = StyleSheet.create({
     fontSize: 25,
     color: "#5f7cf9",
   },
+  alertTitle: {
+    fontSize: 36,
+    color: "#ff6961",
+  },
+  alertMessage: {
+    fontSize: 18,
+    color: "#eee",
+    backgroundColor: "#422161",
+    borderRadius: 8,
+    padding: 8,
+    marginVertical: 8,
+  },
 });
 
 export { general };

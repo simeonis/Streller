@@ -214,8 +214,11 @@ export const Channel = ({route, navigation}) => {
 
 export const Controller = ({route}) => {
     // State variables
-    const [bot, setBot] = React.useState(null);
-    const [channel, setChannel] = React.useState("");
+    const [bot, setBot] = useState(null);
+    const [channel, setChannel] = useState("");
+    const [visibility, setVisibility] = useState(false);
+    const [title, setTitle] = useState("");
+    const [message, setMessage] = useState("");
 
     // OnBotUpdate
     React.useEffect(() => {
@@ -240,6 +243,9 @@ export const Controller = ({route}) => {
 
     // Bot event handler
     const onNoticeHandler = (channel, msgid, message) => {
+        setVisibility(true);
+        setTitle("Warning");
+        setMessage(message);
         // setAlertOptions({visibility: true, title: "Error", text: message})
     }
 
@@ -257,6 +263,14 @@ export const Controller = ({route}) => {
                 onLongPress={() => {}}
                 onPress={sendMessage}>
             </GridView>
+            <AlertView
+                toggleVisibility={visibility}>
+                <View style={[general.container, {width:'100%'}]}>
+                    <Text style={general.alertTitle}>{title}</Text>
+                    <Text style={general.alertMessage}>{message}</Text>
+                    <BasicButton title="Close" width={'100%'} onPress={() => setVisibility(false)}/>
+                </View>
+            </AlertView>
         </SafeAreaView>
         </DismissKeyboard>
     );
