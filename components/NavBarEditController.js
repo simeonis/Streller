@@ -18,9 +18,12 @@ const NavBarEditController = (props) => {
 
     const addButton = () => {
         let list = userInfo.buttons;
-        if (list.length < 10) {
+        if (list && list.length < 10) {
             list.push({id: list.length+1, type: 'large', titles: ['Default'], msg: ['Hello from Streller!'], img: [randomDefault()]});
             updateUserInfo({buttons: list, email: userInfo.email, token: userInfo.token});
+        } else {
+            updateUserInfo({buttons: [{id: 1, type: 'large', titles: ['Default'], msg: ['Hello from Streller!'], 
+            img: [randomDefault()]}], email: userInfo.email, token: userInfo.token});
         }
     }
 

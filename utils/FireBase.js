@@ -12,7 +12,6 @@ const firebaseConfig = {
     measurementId: "G-FXPYF4492Q"
 };
 
-
 //Interacting with the Firebase Realtime Database
 export default class FireBase {
     constructor() {
@@ -31,23 +30,22 @@ export default class FireBase {
         return output;
     }
 
-    getUserInfo(email) {
-        let path= this.convertEmail(email);
-        firebase
-            .database()
-            .ref('Users/' + path)
-            .once('value')
-            .then(snapshot => {
-                return snapshot.val();
-            });
+    async getUserInfo(email) {
+        let path=this.convertEmail(email);
+        let ref=firebase.database().ref('Users/' + path);
+        let snapshot = await ref.once('value');
+
+        if (snapshot.exists()) {
+            return snapshot.val()
+        } return null
     }
 
     // Function to Update User
     updateUserInfo(email, userInfo) {
-        let path= this.convertEmail(email);
+        let path = this.convertEmail(email);
         firebase
             .database()
-            .ref('Users/' + email)
+            .ref('Users/' + path)
             .update({
                 userInfo,
             });

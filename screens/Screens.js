@@ -21,13 +21,13 @@ const TWITCH_VALID_PATH = "validate";
 export const Splash = () => {
     return (
         <Background>
-            <Image 
-            source={require('../assets/streller.png')} 
-            style={{
-                width: '50%',
-                height: 'auto',
-                aspectRatio: 1,
-            }}></Image>
+            <Image
+                source={require('../assets/streller.png')}
+                style={{
+                    width: '50%',
+                    height: 'auto',
+                    aspectRatio: 1,
+                }}></Image>
         </Background>
     );
 }
@@ -43,16 +43,23 @@ export const Welcome = ({ navigation }) => {
 }
 
 export const Login = ({ navigation }) => {
-    const { updateUserInfo, updateUserID } = useContext(ControllerContext);
+    const { login } = useContext(ControllerContext);
+    const [email, setEmail] = useState('');
 
     const loginIn = () => {
-        navigation.navigate("Home");
+        login(email)
+        .then((successful) => {
+            if (successful) {
+                navigation.navigate("Home");
+            }
+        })
     }
 
     return (
         <Background>
             <Text style={[general.title]}>Login</Text>
-            <DescriptiveInput style={{ width: '75%' }} label="Email" placeholder="Enter your email" />
+            <DescriptiveInput style={{ width: '75%' }} label="Email" placeholder="Enter your email"
+                text={email} onChangeText={setEmail} />
             <DescriptiveInput style={{ width: '75%' }} label="Password" placeholder="Enter your password" secure={true} />
             <BasicButton
                 title="Login"
@@ -63,18 +70,20 @@ export const Login = ({ navigation }) => {
 }
 
 export const SignUp = ({ navigation }) => {
-    const { updateUserInfo, updateUserID } = useContext(ControllerContext);
+    const { signup } = useContext(ControllerContext);
+    const [email, setEmail] = useState('');
 
     const signUp = () => {
-        updateUserID('');
-        updateUserInfo({ buttons: [], email: '', token: '' });
-        navigation.navigate("Home");
+        if (signup(email)) {
+            navigation.navigate("Home");
+        }
     }
 
     return (
         <Background>
             <Text style={general.title}>Sign Up</Text>
-            <DescriptiveInput style={{ width: '75%' }} label="Email" placeholder="Enter your email" />
+            <DescriptiveInput style={{ width: '75%' }} label="Email" placeholder="Enter your email"
+                text={email} onChangeText={setEmail} />
             <DescriptiveInput style={{ width: '75%' }} label="Password" placeholder="Enter your password" secure={true} />
             <DescriptiveInput style={{ width: '75%' }} label="Confirm Password" placeholder="Re-enter your password" secure={true} />
             <BasicButton
@@ -89,9 +98,8 @@ export const Home = ({ navigation }) => {
     // State variables
     const [info, setInfo] = useState("");
     const [visibility, setVisibility] = useState(false);
-    const { userInfo, updateUserInfo, updateUserID } = useContext(ControllerContext);
-
-    // OnMount
+    const { userInfo, updateUserInfo, logout } = useContext(ControllerContext);
+    
     useEffect(() => {
         if (userInfo && userInfo.token !== '') validateToken(userInfo.token);
         else setInfo('Please connect your Twitch');
@@ -123,35 +131,36 @@ export const Home = ({ navigation }) => {
                 // Valid non-expired token
                 if (json.expires_in && json.expires_in > 0) {
                     setInfo(json.login);
-                    updateUserInfo({ buttons: userInfo.buttons, email: userInfo.email, token: access_token });
+                    updateUserInfo({ buttons: userInfo.buttons ? userInfo.buttons : [], email: userInfo.email, token: access_token });
                 }
             }).catch(() => { console.error(`An error occured while validating a token`); });
     }
 
     const twitchConnect = () => {
+        // Connect Twitch account
         if (userInfo.token === '') {
             setInfo('Fetching info...');
             authPrompt({ useProxy: true, TWITCH_REDIRECT_URI })
-            .then((response) => {
-                validateToken(response.authentication.accessToken);
-            }).catch(() => { console.error('Error generating token') })
-        } else {
+                .then((response) => {
+                    validateToken(response.authentication.accessToken);
+                }).catch(() => { console.error('Error generating token') })
+        }
+        // Disconnect Twitch account
+        else {
             setInfo('Please connect your Twitch');
-            updateUserInfo({ buttons: userInfo.buttons, email: userInfo.email, token: "" });
+            updateUserInfo({ buttons: userInfo.buttons ? userInfo.buttons : [], email: userInfo.email, token: "" });
         }
     }
 
     const signOut = () => {
-        setVisibility(false);
-        updateUserInfo(null);
-        updateUserID(null);
+        logout();
         navigation.navigate("Welcome");
     }
 
     return (
         <Background>
             <View style={[general.topRight]}>
-                <Row style={{ top: '64%', right: '32%'}}>
+                <Row style={{ top: '64%', right: '32%' }}>
                     {userInfo && userInfo.token === '' ? <IconButton
                         name="alert-circle"
                         size={32}
@@ -231,7 +240,7 @@ export const Channel = ({ route, navigation }) => {
                 });
                 setChannel("");
             } else showAlert("You do not have a Twitch account connected");
-        } else showAlert("Channel name must not be empty");
+        }
     }
 
     return (
@@ -349,20 +358,23 @@ export const EditController = () => {
     // Updates button data
     const applyChanges = () => {
         if (index && index.length > 0) {
+            let errorOccured = false;
+
             // Update button image
             if (image) {
                 userInfo.buttons[index[0] - 1].img[index[1]] = image;
             }
             // Update button message
-            if (message !== "") {
+            if (message && message !== "") {
                 userInfo.buttons[index[0] - 1].msg[index[1]] = message;
-            }
+            } else errorOccured = true;
             // Update button title
-            if (title !== "") {
+            if (title && title !== "") {
                 userInfo.buttons[index[0] - 1].titles[index[1]] = title;
-            }
+            } else errorOccured = true;
             // Update button type
             if (type !== "") {
+                errorOccured = false;
                 if (type !== "delete") {
                     userInfo.buttons[index[0] - 1].type = type;
                 } else {
@@ -373,12 +385,11 @@ export const EditController = () => {
                         userInfo.buttons[i].id = i + 1;
                     }
                 }
+            } if (!errorOccured) {
+                updateUserInfo(userInfo);
+                closeAlert();
             }
-
-            updateUserInfo(userInfo);
         }
-
-        closeAlert();
     }
 
     return (

@@ -1,5 +1,5 @@
 import React, {createContext, useState} from 'react';
-import FireBase from '../utils/FireBase';
+import FireBase from '../utils/firebase';
 
 export const ControllerContext = createContext();
 
@@ -7,34 +7,67 @@ const fb = new FireBase();
 
 export const ControllerProvider = ({children}) => {
     const [userInfo, setUserInfo] = useState(null);
-    const [userID, setUserID] = useState('');
+    const [userEmail, setUserEmail] = useState('');
+
+    const logout = () => {
+        setUserInfo(null);
+        setUserEmail('');
+    }
+
+    const deleteUser = () => {
+        if (userEmail && userEmail !== '') {
+            fb.removeUser(userEmail);
+        }
+    }
+
+    const login = async (email) => {
+        if (email && email !== '') {
+            // Valid email
+            return await fb.getUserInfo(email)
+                    .then((response) => {
+                        // User exist in database
+                        if (response) {
+                            setUserEmail(email);
+                            setUserInfo(response.userInfo);
+                            return true;
+                        } 
+                        // User does not exist
+                        return false;
+                    }).catch(() => {return false});
+        } 
+        // Invalid email
+        return false; 
+    }
+
+    const signup = (email) => {
+        if (email && email !== '') {
+            // Assume valid and unique email
+            fb.addUser(email);
+            setUserEmail(email);
+            setUserInfo({ buttons: [], email: email, token: '' });
+            return true;
+        } 
+        // Invalid email
+        return false; 
+    }
 
     const updateUserInfo = (userObject) => {
         setUserInfo(userObject);
-        fb.updateUserInfo(userID, userObject);
-    };
-
-    const updateUserID = (email) => {
-        if (email === 'delete') {
-            fb.removeUser(userInfo.email)
-        } else {
-            let data = fb.getUserInfo(email);
-            if (data === undefined){
-                fb.addUser(email);
-            }else{
-                userInfo = data;
-            }
-            setUserID(email);
+        if (userEmail && userEmail !== '') {
+            fb.updateUserInfo(userEmail, userObject);
         }
-    }
+    };
 
     return(
         <ControllerContext.Provider
             value={{
                 userInfo,
                 updateUserInfo,
-                userID,
-                updateUserID
+                userEmail,
+                login,
+                signup,
+                logout,
+                deleteUser,
             }}>
             {children}
         </ControllerContext.Provider>
