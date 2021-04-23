@@ -95,7 +95,6 @@ export const Home = ({ navigation }) => {
 
     // OnMount
     useEffect(() => {
-        console.log("YEET");
         if (userInfo && userInfo.token !== '') validateToken(userInfo.token);
         else setInfo('Please connect your Twitch');
     }, []);

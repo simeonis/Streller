@@ -7,13 +7,13 @@ import DismissKeyboard from './DismissKeyboard';
 export const Background = ({ children }) => {
     return (
         <DismissKeyboard>
-            <SafeAreaView style={[styles.container]}>
+            <View style={[styles.container]}>
                 <LinearGradient
                     colors={['#57199F', '#39085E', '#29003D']}
                     style={[styles.background, styles.container]}>
                     {children}
                 </LinearGradient>
-            </SafeAreaView>
+            </View>
         </DismissKeyboard>
     );
 }
