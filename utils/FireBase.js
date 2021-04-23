@@ -16,9 +16,14 @@ const firebaseConfig = {
 //Interacting with the Firebase Realtime Database
 export default class FireBase {
     constructor() {
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        } else {
+            firebase.app();
+        }
     }
 
+    // Function to convert email to valid ID
     convertEmail(input) {
         let output = ""
         for (var i = 0; i < input.length; i++) {
@@ -31,8 +36,9 @@ export default class FireBase {
         return output;
     }
 
+    //Getting userinfo as an object
     getUserInfo(email) {
-        let path= this.convertEmail(email);
+        let path = this.convertEmail(email);
         firebase
             .database()
             .ref('Users/' + path)
@@ -44,7 +50,7 @@ export default class FireBase {
 
     // Function to Update User
     updateUserInfo(email, userInfo) {
-        let path= this.convertEmail(email);
+        let path = this.convertEmail(email);
         firebase
             .database()
             .ref('Users/' + email)
@@ -76,4 +82,24 @@ export default class FireBase {
             .ref('Users/' + path)
             .remove();
     }
+
+    //Function to handle Signup
+    async userSignUp(email, password) {
+        return firebase
+            .auth()
+            .createUserWithEmailAndPassword(email, password)
+            .then(() => { return true })
+            .catch(err => {return err});
+    }
+
+    //Function to handle login
+    async userLogin(email, password) {
+        return firebase
+            .auth()
+            .signInWithEmailAndPassword(email, password)
+            .then(() => { return true })
+            .catch(err => {return err});
+    }
 }
+
+

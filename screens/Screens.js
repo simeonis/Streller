@@ -11,6 +11,7 @@ import ImagePicker from '../components/ImagePicker';
 import { ControllerContext } from '../context/ControllerProvider';
 import ChatBot from '../utils/chatbot';
 import { general } from '../utils/styles';
+import FireBase from '../utils/FireBase';
 
 // Twitch API
 const TWITCH_SCOPES = ["chat:edit", "chat:read"];
@@ -18,16 +19,19 @@ const TWITCH_BASE_URL = "https://id.twitch.tv/oauth2/";
 const TWITCH_AUTH_PATH = "authorize";
 const TWITCH_VALID_PATH = "validate";
 
+//Firebase
+const fb = new FireBase();
+
 export const Splash = () => {
     return (
         <Background>
-            <Image 
-            source={require('../assets/streller.png')} 
-            style={{
-                width: '50%',
-                height: 'auto',
-                aspectRatio: 1,
-            }}></Image>
+            <Image
+                source={require('../assets/streller.png')}
+                style={{
+                    width: '50%',
+                    height: 'auto',
+                    aspectRatio: 1,
+                }}></Image>
         </Background>
     );
 }
@@ -44,43 +48,103 @@ export const Welcome = ({ navigation }) => {
 
 export const Login = ({ navigation }) => {
     const { updateUserInfo, updateUserID } = useContext(ControllerContext);
+    const [emailText, onEmailTextChange] = useState("");
+    const [passwordText, onPasswordChange] = useState("");
+    const [visibility, setVisibility] = useState(false);
+    const [message, setMessage] = useState("");
+
+    const showAlert = (message) => {
+        setMessage(message);
+        setVisibility(true);
+    }
 
     const loginIn = () => {
-        navigation.navigate("Home");
+
+        fb.userLogin(emailText, passwordText)
+            .then((response) => {
+                if (response === true) {
+                    navigation.navigate("Home");
+                } else {
+                    showAlert(response.message);
+                }
+            });
+
     }
 
     return (
         <Background>
             <Text style={[general.title]}>Login</Text>
-            <DescriptiveInput style={{ width: '75%' }} label="Email" placeholder="Enter your email" />
-            <DescriptiveInput style={{ width: '75%' }} label="Password" placeholder="Enter your password" secure={true} />
+            <DescriptiveInput style={{ width: '75%' }} label="Email" placeholder="Enter your email" text={emailText} onChangeText={onEmailTextChange} />
+            <DescriptiveInput style={{ width: '75%' }} label="Password" placeholder="Enter your password" text={passwordText} onChangeText={onPasswordChange} secure={true} />
             <BasicButton
                 title="Login"
                 style={{ marginTop: '4%', width: 200 }}
                 onPress={loginIn} />
+            <AlertView toggleVisibility={visibility}>
+                <Text style={general.alertTitle}>Warning</Text>
+                <Text style={general.alertMessage}>{message}</Text>
+                <BasicButton
+                    title="OK"
+                    style={{ marginTop: '4%', width: 200 }}
+                    onPress={() => {
+                        setVisibility(false);
+                    }} />
+            </AlertView>
         </Background>
     );
 }
 
 export const SignUp = ({ navigation }) => {
     const { updateUserInfo, updateUserID } = useContext(ControllerContext);
+    const [emailText, onEmailTextChange] = useState("");
+    const [passwordText, onPasswordChange] = useState("");
+    const [confirmPassText, onConfirmPassChange] = useState("");
+    const [visibility, setVisibility] = useState(false);
+    const [message, setMessage] = useState("");
+
+    const showAlert = (message) => {
+        setMessage(message);
+        setVisibility(true);
+    }
 
     const signUp = () => {
         updateUserID('');
         updateUserInfo({ buttons: [], email: '', token: '' });
-        navigation.navigate("Home");
+
+        if ((passwordText === confirmPassText) && (passwordText != "")) {
+            fb.userSignUp(emailText, passwordText)
+                .then((response) => {
+                    if (response === true) {
+                        navigation.navigate("Home");
+                    } else {
+                        showAlert(response.message);
+                    }
+                });
+        } else {
+            showAlert("Passwords Do Not Match");
+        }
     }
 
     return (
         <Background>
             <Text style={general.title}>Sign Up</Text>
-            <DescriptiveInput style={{ width: '75%' }} label="Email" placeholder="Enter your email" />
-            <DescriptiveInput style={{ width: '75%' }} label="Password" placeholder="Enter your password" secure={true} />
-            <DescriptiveInput style={{ width: '75%' }} label="Confirm Password" placeholder="Re-enter your password" secure={true} />
+            <DescriptiveInput style={{ width: '75%' }} label="Email" placeholder="Enter your email" text={emailText} onChangeText={onEmailTextChange} />
+            <DescriptiveInput style={{ width: '75%' }} label="Password" placeholder="Enter your password" text={passwordText} onChangeText={onPasswordChange} secure={true} />
+            <DescriptiveInput style={{ width: '75%' }} label="Confirm Password" placeholder="Re-enter your password" text={confirmPassText} onChangeText={onConfirmPassChange} secure={true} />
             <BasicButton
                 title="Sign Up"
                 style={{ marginTop: '4%', width: 200 }}
                 onPress={signUp} />
+            <AlertView toggleVisibility={visibility}>
+                <Text style={general.alertTitle}>Warning</Text>
+                <Text style={general.alertMessage}>{message}</Text>
+                <BasicButton
+                    title="OK"
+                    style={{ marginTop: '4%', width: 200 }}
+                    onPress={() => {
+                        setVisibility(false);
+                    }} />
+            </AlertView>
         </Background>
     );
 }
@@ -132,9 +196,9 @@ export const Home = ({ navigation }) => {
         if (userInfo.token === '') {
             setInfo('Fetching info...');
             authPrompt({ useProxy: true, TWITCH_REDIRECT_URI })
-            .then((response) => {
-                validateToken(response.authentication.accessToken);
-            }).catch(() => { console.error('Error generating token') })
+                .then((response) => {
+                    validateToken(response.authentication.accessToken);
+                }).catch(() => { console.error('Error generating token') })
         } else {
             setInfo('Please connect your Twitch');
             updateUserInfo({ buttons: userInfo.buttons, email: userInfo.email, token: "" });
@@ -151,7 +215,7 @@ export const Home = ({ navigation }) => {
     return (
         <Background>
             <View style={[general.topRight]}>
-                <Row style={{ top: '64%', right: '32%'}}>
+                <Row style={{ top: '64%', right: '32%' }}>
                     {userInfo && userInfo.token === '' ? <IconButton
                         name="alert-circle"
                         size={32}
