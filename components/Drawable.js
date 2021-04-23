@@ -1,19 +1,35 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
+import DismissKeyboard from './DismissKeyboard';
+
+export const Background = ({ children }) => {
+    return (
+        <DismissKeyboard>
+            <SafeAreaView style={[styles.container]}>
+                <LinearGradient
+                    colors={['#57199F', '#39085E', '#29003D']}
+                    style={[styles.background, styles.container]}>
+                    {children}
+                </LinearGradient>
+            </SafeAreaView>
+        </DismissKeyboard>
+    );
+}
 
 export const BasicButton = (props) => {
     return (
         <Pressable
-            style={({ pressed }) => [
-                styles.primary, 
-                { backgroundColor: pressed ? '#645c99' : '#8c9eff' },
-                { width: props.width },
-                { height: props.height },
-                props.style
-            ]}
+            style={[props.containerStyle]}
             onPress={props.onPress}>
-            <Text style={styles.primaryText}>{props.title}</Text>
+            {({pressed}) => (
+            <LinearGradient 
+                style={[styles.primary, props.style]}
+                colors={pressed ? ['#EC466D', '#EB685C', '#EB8947'] : ['#EE6181', '#EE7C72', '#ED9A61']}>
+                <Text style={styles.primaryText}>{props.title}</Text>
+            </LinearGradient>
+            )}
         </Pressable>
     );
 }
@@ -23,12 +39,28 @@ export const IconButton = (props) => {
         <Pressable
             style={[props.style]}
             onPress={props.onPress}>
-            {({pressed}) => (
-            <Ionicons 
-                name={props.name} 
-                size={props.size} 
-                color={pressed ? props.color[1] : props.color[0]}>
-            </Ionicons>
+            {({ pressed }) => (
+                <Ionicons
+                    name={props.name}
+                    size={props.size}
+                    color={pressed ? props.color[1] : props.color[0]}>
+                </Ionicons>
+            )}
+        </Pressable>
+    );
+}
+
+export const AntIconButton = (props) => {
+    return (
+        <Pressable
+            style={[props.style]}
+            onPress={props.onPress}>
+            {({ pressed }) => (
+                <AntDesign
+                    name={props.name}
+                    size={props.size}
+                    color={pressed ? props.color[1] : props.color[0]}>
+                </AntDesign>
             )}
         </Pressable>
     );
@@ -39,16 +71,16 @@ export const VisualButton = (props) => {
         <Pressable
             style={({ pressed }) => [styles.primary, { backgroundColor: pressed ? props.color[1] : props.color[0] }, props.style]}
             onPress={props.onPress}>
-            {({pressed}) => (
-            <View style={styles.row}>
-            <Ionicons
-                style={{marginRight: 4}}
-                name={props.iconName} 
-                size={props.size ? props.size : 32} 
-                color={props.iconColor}>
-            </Ionicons>
-            <Text style={styles.primaryText}>{props.title}</Text>
-            </View>
+            {({ pressed }) => (
+                <View style={styles.row}>
+                    <Ionicons
+                        style={{ marginRight: 4 }}
+                        name={props.iconName}
+                        size={props.size ? props.size : 32}
+                        color={props.iconColor}>
+                    </Ionicons>
+                    <Text style={styles.primaryText}>{props.title}</Text>
+                </View>
             )}
         </Pressable>
     );
@@ -62,7 +94,7 @@ export const BasicInput = (props) => {
             value={props.text}
             secureTextEntry={props.secure}
             placeholder={props.placeholder}
-            placeholderTextColor="#fff4" />
+            placeholderTextColor="#0006"/>
     );
 }
 
@@ -70,20 +102,20 @@ export const DescriptiveInput = (props) => {
     let alignment = props.textAlign ? props.textAlign : 'flex-start';
     return (
         <View style={[props.style, styles.column]}>
-        <Text style={[styles.label, {alignSelf: alignment}]}>{props.label}</Text>
-        <TextInput
-            style={[styles.field]}
-            onChangeText={props.onChangeText}
-            value={props.text}
-            secureTextEntry={props.secure}
-            placeholder={props.placeholder}
-            placeholderTextColor="#fff4" />
+            <Text style={[styles.label, { alignSelf: alignment }]}>{props.label}</Text>
+            <TextInput
+                style={[styles.field]}
+                onChangeText={props.onChangeText}
+                value={props.text}
+                secureTextEntry={props.secure}
+                placeholder={props.placeholder}
+                placeholderTextColor="#0006"/>
         </View>
     );
 }
 
 export const Row = (props) => {
-    return(
+    return (
         <View style={[styles.row, props.style]}>
             {props.children}
         </View>
@@ -91,6 +123,18 @@ export const Row = (props) => {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flexGrow: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    background: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        height: '100%',
+    },
     primary: {
         margin: 4,
         borderRadius: 8,
@@ -110,8 +154,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         width: '100%',
         borderRadius: 10,
-        color: '#8c9eff',
-        backgroundColor: '#422161',
+        color: '#000',
+        backgroundColor: '#B9D6F2',
         fontWeight: 'bold',
     },
     label: {

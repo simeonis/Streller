@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useContext } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -5,39 +6,51 @@ import { ControllerContext } from '../context/ControllerProvider';
 
 const SmallBtn = (props) => {
     return (
-        <Pressable 
-            style={({pressed}) => 
-                [styles.smallButton, styles.container, 
-                { borderColor: pressed ? '#8c9eff' : '#28143b' }]} 
+        <Pressable
             onPress={props.onPress}
             onLongPress={props.onLongPress}>
-            <Image source={{uri: props.image}} style={styles.buttonImg}/>
+            {({ pressed }) => (
+                <LinearGradient style={[styles.smallButton, styles.container]}
+                    colors={['#72EFDD', '#5390D9', '#6930C3']}>
+                    <Image source={{ uri: props.image }}
+                        style={[styles.buttonImg,
+                        { width: pressed ? '95%' : '100%' }]} />
+                </LinearGradient>
+            )}
         </Pressable>
     );
 }
 
 const MediumBtn = (props) => {
     return (
-        <Pressable 
-            style={({pressed}) => 
-                [styles.mediumButton, styles.container, 
-                { borderColor: pressed ? '#8c9eff' : '#28143b' }]} 
+        <Pressable
             onPress={props.onPress}
             onLongPress={props.onLongPress}>
-            <Image source={{uri: props.image}} style={[styles.buttonHalfImg]}/>
+            {({ pressed }) => (
+                <LinearGradient style={[styles.mediumButton, styles.container]}
+                    colors={['#72EFDD', '#5390D9', '#6930C3']}>
+                    <Image source={{ uri: props.image }}
+                        style={[styles.buttonHalfImg,
+                        { width: pressed ? '95%' : '100%' }]} />
+                </LinearGradient>
+            )}
         </Pressable>
     );
 }
 
 const LargeBtn = (props) => {
     return (
-        <Pressable 
-            style={({pressed}) => 
-                [styles.largeButton, styles.container,
-                { borderColor: pressed ? '#8c9eff' : '#28143b' }]}
+        <Pressable
             onPress={props.onPress}
             onLongPress={props.onLongPress}>
-            <Image source={{uri: props.image}} style={styles.buttonImg}/>
+            {({ pressed }) => (
+                <LinearGradient style={[styles.largeButton, styles.container]}
+                    colors={['#72EFDD', '#5390D9', '#6930C3']}>
+                    <Image source={{ uri: props.image }}
+                        style={[styles.buttonImg,
+                        { width: pressed ? '95%' : '100%' }]} />
+                </LinearGradient>
+            )}
         </Pressable>
     );
 }
@@ -46,21 +59,23 @@ export const GridView = (props) => {
     const { userInfo } = useContext(ControllerContext);
 
     const sendMessage = (message) => {
-        props.onPress(message);
+        if (message) {
+            props.onPress(message);
+        }
     }
 
     const buttonMap = (id, type, titles, messages, images) => {
         if (type === 'small') {
-            return(
+            return (
                 <View>
                     <View style={styles.container}>
-                    <SmallBtn 
+                        <SmallBtn
                             onPress={() => sendMessage(messages[0])}
                             onLongPress={() => props.onLongPress([id, 0])}
                             title={titles[0]}
                             image={images[0]}>
                         </SmallBtn>
-                        <SmallBtn 
+                        <SmallBtn
                             onPress={() => sendMessage(messages[1])}
                             onLongPress={() => props.onLongPress([id, 1])}
                             title={titles[1]}
@@ -68,13 +83,13 @@ export const GridView = (props) => {
                         </SmallBtn>
                     </View>
                     <View style={styles.container}>
-                    <SmallBtn 
+                        <SmallBtn
                             onPress={() => sendMessage(messages[2])}
                             onLongPress={() => props.onLongPress([id, 2])}
                             title={titles[2]}
                             image={images[2]}>
                         </SmallBtn>
-                        <SmallBtn 
+                        <SmallBtn
                             onPress={() => sendMessage(messages[3])}
                             onLongPress={() => props.onLongPress([id, 3])}
                             title={titles[3]}
@@ -83,7 +98,7 @@ export const GridView = (props) => {
                     </View>
                 </View>);
         } else if (type === 'medium') {
-            return(
+            return (
                 <View>
                     <MediumBtn
                         onPress={() => sendMessage(messages[0])}
@@ -99,26 +114,26 @@ export const GridView = (props) => {
                     </MediumBtn>
                 </View>);
         } else if (type === 'large') {
-            return(<LargeBtn 
-                    onPress={() => sendMessage(messages[0])}
-                    onLongPress={() => props.onLongPress([id, 0])}
-                    title={titles[0]}
-                    image={images[0]}>
-                    </LargeBtn>);
+            return (<LargeBtn
+                onPress={() => sendMessage(messages[0])}
+                onLongPress={() => props.onLongPress([id, 0])}
+                title={titles[0]}
+                image={images[0]}>
+            </LargeBtn>);
         } else {
             return;
         }
     }
 
-    return(
+    return (
         <View style={[styles.container]}>
             <View>
-            <FlatList
-                data={userInfo.buttons}
-                renderItem={({item}) => buttonMap(item.id, item.type, item.titles, item.msg, item.img)}
-                keyExtractor={(item) => item.id}
-                numColumns={2}
-            />
+                <FlatList
+                    data={userInfo.buttons}
+                    renderItem={({ item }) => buttonMap(item.id, item.type, item.titles, item.msg, item.img)}
+                    keyExtractor={(item) => item.id}
+                    numColumns={2}
+                />
             </View>
         </View>
     );
@@ -135,19 +150,12 @@ const styles = StyleSheet.create({
         width: 82,
         height: 82,
         margin: 8,
-        borderWidth: 3,
-        backgroundColor: '#422161',
-        borderColor:'#28143b',
         borderRadius: 10,
     },
     mediumButton: {
         width: 180,
         height: 82,
-        borderRadius: 10,
         margin: 8,
-        borderWidth: 3,
-        backgroundColor: '#422161',
-        borderColor:'#28143b',
         borderRadius: 10,
     },
     largeButton: {
@@ -155,26 +163,21 @@ const styles = StyleSheet.create({
         width: 180,
         height: 180,
         margin: 8,
-        borderWidth: 3,
-        backgroundColor: '#422161',
-        borderColor:'#28143b',
-        borderRadius: 10,
+        borderRadius: 8,
     },
     buttonText: {
         textAlign: 'center',
         fontSize: 24,
     },
     buttonImg: {
-        width: '100%',
         height: 'auto',
         aspectRatio: 1,
-        borderRadius: 6,
+        borderRadius: 8,
         overflow: 'hidden',
     },
     buttonHalfImg: {
-        width: '100%',
         height: 'auto',
-        aspectRatio: 2.2,
+        aspectRatio: 2.22,
         borderRadius: 6,
         overflow: 'hidden',
     }

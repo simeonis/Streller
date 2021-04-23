@@ -3,14 +3,13 @@ import { StyleSheet } from 'react-native';
 const general = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#28143b',
+    backgroundColor: 'transparent',
   },
   topTab: {
     position: 'absolute',
-    top: 0,
+    top: 16,
     flexDirection: 'column',
     padding: 10,
   },
@@ -22,9 +21,17 @@ const general = StyleSheet.create({
     padding: 10,
     width: '100%',
   },
+  topRight: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    flexDirection: 'column',
+    marginTop: '8%',
+    marginRight: '2%',
+  },
   title: {
     fontSize: 50,
-    color: "#FF88FF",
+    color: "#f8d568",
   },
   subtext: {
     fontSize: 25,
@@ -37,11 +44,11 @@ const general = StyleSheet.create({
   alertMessage: {
     fontSize: 18,
     color: "#eee",
-    backgroundColor: "#422161",
+    backgroundColor: "#0004",
     borderRadius: 8,
     padding: 8,
     marginVertical: 8,
-    width:'100%',
+    width: '100%',
   },
 });
 
