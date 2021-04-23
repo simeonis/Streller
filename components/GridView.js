@@ -1,87 +1,140 @@
-import React from 'react'
-import { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { useContext } from 'react';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import { ControllerContext } from '../context/ControllerProvider';
 
 const SmallBtn = (props) => {
     return (
-        <TouchableOpacity style={[styles.smallButton, styles.shadow]} 
-        onPress={props.onPress}>
-            <Text style={styles.buttonText}>{props.title}</Text>
-        </TouchableOpacity>
+        <Pressable
+            onPress={props.onPress}
+            onLongPress={props.onLongPress}>
+            {({ pressed }) => (
+                <LinearGradient style={[styles.smallButton, styles.container]}
+                    colors={['#72EFDD', '#5390D9', '#6930C3']}>
+                    <Image source={{ uri: props.image }}
+                        style={[styles.buttonImg,
+                        { width: pressed ? '95%' : '100%' }]} />
+                </LinearGradient>
+            )}
+        </Pressable>
     );
 }
 
 const MediumBtn = (props) => {
     return (
-        <TouchableOpacity style={[styles.mediumButton, styles.shadow]} 
-        onPress={props.onPress}>
-            <Text style={styles.buttonText}>{props.title}</Text>
-        </TouchableOpacity>
+        <Pressable
+            onPress={props.onPress}
+            onLongPress={props.onLongPress}>
+            {({ pressed }) => (
+                <LinearGradient style={[styles.mediumButton, styles.container]}
+                    colors={['#72EFDD', '#5390D9', '#6930C3']}>
+                    <Image source={{ uri: props.image }}
+                        style={[styles.buttonHalfImg,
+                        { width: pressed ? '95%' : '100%' }]} />
+                </LinearGradient>
+            )}
+        </Pressable>
     );
 }
 
 const LargeBtn = (props) => {
     return (
-        <TouchableOpacity style={[styles.largeButton, styles.shadow]} 
-        onPress={props.onPress}>
-            <Text style={styles.buttonText}>{props.title}</Text>
-        </TouchableOpacity>
+        <Pressable
+            onPress={props.onPress}
+            onLongPress={props.onLongPress}>
+            {({ pressed }) => (
+                <LinearGradient style={[styles.largeButton, styles.container]}
+                    colors={['#72EFDD', '#5390D9', '#6930C3']}>
+                    <Image source={{ uri: props.image }}
+                        style={[styles.buttonImg,
+                        { width: pressed ? '95%' : '100%' }]} />
+                </LinearGradient>
+            )}
+        </Pressable>
     );
 }
 
 export const GridView = (props) => {
-    const [data, setData] = useState(props.data);
+    const { userInfo } = useContext(ControllerContext);
 
-    const buttonMap = (type, titles, msg) => {
-        if (type === 'small') {
-            return(
-                <View>
-                    <View style={styles.container}>
-                        <SmallBtn
-                            onPress={() => props.onPress(msg[0])}
-                            title={titles[0]}></SmallBtn>
-                        <SmallBtn 
-                            onPress={() => props.onPress(msg[1])}
-                            title={titles[1]}></SmallBtn>
-                    </View>
-                    <View style={styles.container}>
-                        <SmallBtn 
-                            onPress={() => props.onPress(msg[2])}
-                            title={titles[2]}></SmallBtn>
-                        <SmallBtn 
-                            onPress={() => props.onPress(msg[3])}
-                            title={titles[3]}></SmallBtn>
-                    </View>
-                </View>);
-        } else if (type === 'medium') {
-            return(
-                <View>
-                    <MediumBtn 
-                        onPress={() => props.onPress(msg[0])}
-                        title={titles[0]}></MediumBtn>
-                    <MediumBtn
-                        onPress={() => props.onPress(msg[1])}
-                        title={titles[1]}></MediumBtn>
-                </View>);
-        } else if (type === 'large') {
-            return(<LargeBtn 
-                    onPress={() => props.onPress(msg[0])}
-                    title={titles[0]}></LargeBtn>);
-        } else {
-            return(<View></View>);
+    const sendMessage = (message) => {
+        if (message) {
+            props.onPress(message);
         }
     }
 
-    return(
-        <View>
-            <FlatList
-                contentContainerStyle={{justifyContent:'space-between'}}
-                numColumns={2}
-                keyExtractor={(item) => item.id}
-                data={data}
-                renderItem={({item}) => buttonMap(item.type, item.titles, item.msg)}
-            />
+    const buttonMap = (id, type, titles, messages, images) => {
+        if (type === 'small') {
+            return (
+                <View>
+                    <View style={styles.container}>
+                        <SmallBtn
+                            onPress={() => sendMessage(messages[0])}
+                            onLongPress={() => props.onLongPress([id, 0])}
+                            title={titles[0]}
+                            image={images[0]}>
+                        </SmallBtn>
+                        <SmallBtn
+                            onPress={() => sendMessage(messages[1])}
+                            onLongPress={() => props.onLongPress([id, 1])}
+                            title={titles[1]}
+                            image={images[1]}>
+                        </SmallBtn>
+                    </View>
+                    <View style={styles.container}>
+                        <SmallBtn
+                            onPress={() => sendMessage(messages[2])}
+                            onLongPress={() => props.onLongPress([id, 2])}
+                            title={titles[2]}
+                            image={images[2]}>
+                        </SmallBtn>
+                        <SmallBtn
+                            onPress={() => sendMessage(messages[3])}
+                            onLongPress={() => props.onLongPress([id, 3])}
+                            title={titles[3]}
+                            image={images[3]}>
+                        </SmallBtn>
+                    </View>
+                </View>);
+        } else if (type === 'medium') {
+            return (
+                <View>
+                    <MediumBtn
+                        onPress={() => sendMessage(messages[0])}
+                        onLongPress={() => props.onLongPress([id, 0])}
+                        title={titles[0]}
+                        image={images[0]}>
+                    </MediumBtn>
+                    <MediumBtn
+                        onPress={() => sendMessage(messages[1])}
+                        onLongPress={() => props.onLongPress([id, 1])}
+                        title={titles[1]}
+                        image={images[1]}>
+                    </MediumBtn>
+                </View>);
+        } else if (type === 'large') {
+            return (<LargeBtn
+                onPress={() => sendMessage(messages[0])}
+                onLongPress={() => props.onLongPress([id, 0])}
+                title={titles[0]}
+                image={images[0]}>
+            </LargeBtn>);
+        } else {
+            return;
+        }
+    }
+
+    return (
+        <View style={[styles.container]}>
+            <View>
+                <FlatList
+                    data={userInfo.buttons}
+                    renderItem={({ item }) => buttonMap(item.id, item.type, item.titles, item.msg, item.img)}
+                    keyExtractor={(item) => item.id}
+                    numColumns={2}
+                />
+            </View>
         </View>
     );
 }
@@ -89,47 +142,44 @@ export const GridView = (props) => {
 const styles = StyleSheet.create({
     container: {
         display: 'flex',
-        flexDirection:"row",
+        flexDirection: 'row',
         justifyContent: "center",
-        alignItems: 'center',
-    },
-    shadow: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 4,
+        alignItems: "center",
     },
     smallButton: {
-        justifyContent:'center',
-        backgroundColor: '#DDDDDD',
         width: 82,
         height: 82,
-        borderRadius: 10,
-        padding: 10,
         margin: 8,
+        borderRadius: 10,
     },
     mediumButton: {
-        justifyContent:'center',
-        backgroundColor: '#DAF7DC',
         width: 180,
         height: 82,
-        borderRadius: 10,
-        padding: 8,
         margin: 8,
+        borderRadius: 10,
     },
     largeButton: {
-        justifyContent:'center',
-        backgroundColor: '#9EE493',
+        alignSelf: 'flex-start',
         width: 180,
         height: 180,
-        borderRadius: 10,
-        padding: 8,
         margin: 8,
+        borderRadius: 8,
     },
     buttonText: {
         textAlign: 'center',
         fontSize: 24,
+    },
+    buttonImg: {
+        height: 'auto',
+        aspectRatio: 1,
+        borderRadius: 8,
+        overflow: 'hidden',
+    },
+    buttonHalfImg: {
+        height: 'auto',
+        aspectRatio: 2.22,
+        borderRadius: 6,
+        overflow: 'hidden',
     }
 });
 

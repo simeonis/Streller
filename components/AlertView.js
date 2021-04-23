@@ -1,33 +1,22 @@
-import React from 'react'
-import { View, Modal, StyleSheet, Text, TouchableHighlight, Pressable } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react';
+import { Modal, StyleSheet, View } from 'react-native';
 
-/**
- * Custom Alert component
- * @param {Object} options {visibility, title, text}
- * @param {SetStateAction} setOptions Modify any of the listed options
- */
-const AlertView = ({options, setOptions}) => {
+const AlertView = ({children, toggleVisibility}) => {
     return (
         <View>
             <Modal 
                 animationType="fade"
                 transparent={true}
-                visible={options.visibility}>
+                visible={toggleVisibility}>
                 <View style = {styles.centerView}>
-                    <View style = {[styles.modalView, styles.shadow, {backgroundColor: '#FFFFFF'}]}>
-                        <Text style = {styles.titleStyle}>{options.title}</Text>
-                        <View style = {{width: '100%', height: 0.5, backgroundColor: '#000000', marginVertical: 15}}/>
-                        <Text style = {styles.textStyle}>{options.text}</Text>
-                        <Pressable
-                            style={({pressed}) => [
-                                styles.buttonStyle, 
-                                styles.shadow,
-                                {backgroundColor: pressed ? '#94b234' : '#A4C639' 
-                            }]} 
-                            onPress = {() => {setOptions({visibility: false})}}>
-                            <Text style = {styles.buttonText}>OK</Text>
-                        </Pressable>
+                <LinearGradient 
+                            style={styles.background}
+                            colors={['#57199F', '#39085E', '#29003D']}>
+                    <View style = {[styles.modalView]}>
+                        {children}
                     </View>
+                    </LinearGradient>
                 </View>
             </Modal>
         </View>
@@ -38,50 +27,19 @@ const styles = StyleSheet.create({
     centerView: {
         justifyContent: 'center',
         alignItems: 'center',
-        alignContent: 'center',
         flex: 1,
         backgroundColor: '#00000077',
     },
-    modalView: {
+    background: {
         width: '80%',
-        margin: 10,
-        backgroundColor: '#FFFFFF',
         borderRadius: 10,
-        padding: 15,
         alignItems: 'center',
+        padding: 8,
     },
-    shadow: {
-        shadowColor: '#000000',
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.85,
-        elevation: 5,
-    },
-    titleStyle: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    textStyle: {
-        fontSize: 18,
+    modalView: {
         width: '100%',
-        textAlign: 'center',
-    },
-    buttonStyle: {
-        borderRadius: 5,
-        padding: 10,
-        elevation: 0,
-        width: '100%',
-        marginTop: 40
-    },
-    buttonText: {
-        textAlign: 'center',
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#FFFFFF',
+        borderRadius: 10,
+        alignItems: 'center',
     },
 })
 
