@@ -103,13 +103,23 @@ export const DescriptiveInput = (props) => {
     return (
         <View style={[props.style, styles.column]}>
             <Text style={[styles.label, { alignSelf: alignment }]}>{props.label}</Text>
+            <Row>
             <TextInput
                 style={[styles.field]}
                 onChangeText={props.onChangeText}
                 value={props.text}
                 secureTextEntry={props.secure}
                 placeholder={props.placeholder}
-                placeholderTextColor="#0006"/>
+                placeholderTextColor="#0006">
+                </TextInput>
+            { props.text === '' || props.text == null ? <IconButton
+                    style={{position:'absolute', right:16}}
+                    name="alert-circle"
+                    size={32}
+                    color={['#ff6961', '#565656']}>
+            </IconButton> : <View></View>
+            }
+            </Row>
         </View>
     );
 }

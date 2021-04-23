@@ -153,9 +153,8 @@ export const Home = ({ navigation }) => {
     // State variables
     const [info, setInfo] = useState("");
     const [visibility, setVisibility] = useState(false);
-    const { userInfo, updateUserInfo, updateUserID } = useContext(ControllerContext);
-
-    // OnMount
+    const { userInfo, updateUserInfo, logout } = useContext(ControllerContext);
+    
     useEffect(() => {
         if (userInfo && userInfo.token !== '') validateToken(userInfo.token);
         else setInfo('Please connect your Twitch');
@@ -187,28 +186,29 @@ export const Home = ({ navigation }) => {
                 // Valid non-expired token
                 if (json.expires_in && json.expires_in > 0) {
                     setInfo(json.login);
-                    updateUserInfo({ buttons: userInfo.buttons, email: userInfo.email, token: access_token });
+                    updateUserInfo({ buttons: userInfo.buttons ? userInfo.buttons : [], email: userInfo.email, token: access_token });
                 }
             }).catch(() => { console.error(`An error occured while validating a token`); });
     }
 
     const twitchConnect = () => {
+        // Connect Twitch account
         if (userInfo.token === '') {
             setInfo('Fetching info...');
             authPrompt({ useProxy: true, TWITCH_REDIRECT_URI })
                 .then((response) => {
                     validateToken(response.authentication.accessToken);
                 }).catch(() => { console.error('Error generating token') })
-        } else {
+        }
+        // Disconnect Twitch account
+        else {
             setInfo('Please connect your Twitch');
-            updateUserInfo({ buttons: userInfo.buttons, email: userInfo.email, token: "" });
+            updateUserInfo({ buttons: userInfo.buttons ? userInfo.buttons : [], email: userInfo.email, token: "" });
         }
     }
 
     const signOut = () => {
-        setVisibility(false);
-        updateUserInfo(null);
-        updateUserID(null);
+        logout();
         navigation.navigate("Welcome");
     }
 
@@ -295,7 +295,7 @@ export const Channel = ({ route, navigation }) => {
                 });
                 setChannel("");
             } else showAlert("You do not have a Twitch account connected");
-        } else showAlert("Channel name must not be empty");
+        }
     }
 
     return (
@@ -413,20 +413,23 @@ export const EditController = () => {
     // Updates button data
     const applyChanges = () => {
         if (index && index.length > 0) {
+            let errorOccured = false;
+
             // Update button image
             if (image) {
                 userInfo.buttons[index[0] - 1].img[index[1]] = image;
             }
             // Update button message
-            if (message !== "") {
+            if (message && message !== "") {
                 userInfo.buttons[index[0] - 1].msg[index[1]] = message;
-            }
+            } else errorOccured = true;
             // Update button title
-            if (title !== "") {
+            if (title && title !== "") {
                 userInfo.buttons[index[0] - 1].titles[index[1]] = title;
-            }
+            } else errorOccured = true;
             // Update button type
             if (type !== "") {
+                errorOccured = false;
                 if (type !== "delete") {
                     userInfo.buttons[index[0] - 1].type = type;
                 } else {
@@ -437,12 +440,11 @@ export const EditController = () => {
                         userInfo.buttons[i].id = i + 1;
                     }
                 }
+            } if (!errorOccured) {
+                updateUserInfo(userInfo);
+                closeAlert();
             }
-
-            updateUserInfo(userInfo);
         }
-
-        closeAlert();
     }
 
     return (
