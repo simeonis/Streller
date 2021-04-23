@@ -31,10 +31,11 @@ export default class FireBase {
         return output;
     }
 
-    getUserInfo(userId) {
+    getUserInfo(email) {
+        let path= this.convertEmail(email);
         firebase
             .database()
-            .ref('Users/' + userId)
+            .ref('Users/' + path)
             .once('value')
             .then(snapshot => {
                 return snapshot.val();
@@ -42,10 +43,11 @@ export default class FireBase {
     }
 
     // Function to Update User
-    updateUserInfo(userId, userInfo) {
+    updateUserInfo(email, userInfo) {
+        let path= this.convertEmail(email);
         firebase
             .database()
-            .ref('Users/' + userId)
+            .ref('Users/' + email)
             .update({
                 userInfo,
             });

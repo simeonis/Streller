@@ -7,9 +7,6 @@ import { RadioButton } from 'react-native-paper';
 import AlertView from '../components/AlertView';
 import { Background, BasicButton, DescriptiveInput, IconButton, Row, VisualButton } from '../components/Drawable';
 import GridView from '../components/GridView';
-import FireBase from '../utils/FireBase';
-
-
 import ImagePicker from '../components/ImagePicker';
 import { ControllerContext } from '../context/ControllerProvider';
 import ChatBot from '../utils/chatbot';
@@ -49,8 +46,6 @@ export const Login = ({ navigation }) => {
     const { updateUserInfo, updateUserID } = useContext(ControllerContext);
 
     const loginIn = () => {
-        updateUserID('');
-        updateUserInfo({ buttons: [], email: '', token: "2m9m5crfbuoptntx1jchdjrr65jocr" });
         navigation.navigate("Home");
     }
 
@@ -152,8 +147,6 @@ export const Home = ({ navigation }) => {
         updateUserID(null);
         navigation.navigate("Welcome");
     }
-
-    const fb = new FireBase();
 
     return (
         <Background>

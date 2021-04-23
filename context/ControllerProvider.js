@@ -1,6 +1,9 @@
 import React, {createContext, useState} from 'react';
+import FireBase from '../utils/FireBase';
 
 export const ControllerContext = createContext();
+
+const fb = new FireBase();
 
 export const ControllerProvider = ({children}) => {
     const [userInfo, setUserInfo] = useState(null);
@@ -8,14 +11,20 @@ export const ControllerProvider = ({children}) => {
 
     const updateUserInfo = (userObject) => {
         setUserInfo(userObject);
-        // Insert FireBase code
+        fb.updateUserInfo(userID, userObject);
     };
 
-    const updateUserID = (id) => {
-        if (id === 'delete') {
-            // Firebase delete user
+    const updateUserID = (email) => {
+        if (email === 'delete') {
+            fb.removeUser(userInfo.email)
         } else {
-            setUserID(id);
+            let data = fb.getUserInfo(email);
+            if (data === undefined){
+                fb.addUser(email);
+            }else{
+                userInfo = data;
+            }
+            setUserID(email);
         }
     }
 
