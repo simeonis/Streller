@@ -181,7 +181,7 @@ export const Welcome = ({route, navigation}) => {
             onPress={() => navigation.navigate("SignUp")}/>
             <Button 
             title="get button" 
-            onPress={() => fb.getAllButtons("Harry_Potter@gmail")}/>
+            onPress={() => fb.addUser("Light_Bag.ami@gmail")}/>
             <Button 
             title="Delete button" 
             onPress={() => fb.removeButton("Harry_Potter@gmail",4)}/>
