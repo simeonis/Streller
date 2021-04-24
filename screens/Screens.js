@@ -47,7 +47,7 @@ export const Welcome = ({ navigation }) => {
 }
 
 export const Login = ({ navigation }) => {
-    const { updateUserInfo, updateUserID } = useContext(ControllerContext);
+    const { login } = useContext(ControllerContext);
     const [emailText, onEmailTextChange] = useState("");
     const [passwordText, onPasswordChange] = useState("");
     const [visibility, setVisibility] = useState(false);
@@ -63,7 +63,14 @@ export const Login = ({ navigation }) => {
         fb.userLogin(emailText, passwordText)
             .then((response) => {
                 if (response === true) {
-                    navigation.navigate("Home");
+                    login(emailText).then((successful)=> {
+                        if(successful){
+                            navigation.navigate("Home");
+                        }
+                        else {
+                            showAlert("User Does Not Exist");
+                        }
+                    })
                 } else {
                     showAlert(response.message);
                 }
@@ -95,7 +102,7 @@ export const Login = ({ navigation }) => {
 }
 
 export const SignUp = ({ navigation }) => {
-    const { updateUserInfo, updateUserID } = useContext(ControllerContext);
+    const { signup } = useContext(ControllerContext);
     const [emailText, onEmailTextChange] = useState("");
     const [passwordText, onPasswordChange] = useState("");
     const [confirmPassText, onConfirmPassChange] = useState("");
@@ -108,13 +115,10 @@ export const SignUp = ({ navigation }) => {
     }
 
     const signUp = () => {
-        updateUserID('');
-        updateUserInfo({ buttons: [], email: '', token: '' });
-
         if ((passwordText === confirmPassText) && (passwordText != "")) {
             fb.userSignUp(emailText, passwordText)
                 .then((response) => {
-                    if (response === true) {
+                    if (response === true && signup(emailText)) {
                         navigation.navigate("Home");
                     } else {
                         showAlert(response.message);

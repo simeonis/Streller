@@ -1,5 +1,5 @@
 import React, {createContext, useState} from 'react';
-import FireBase from '../utils/firebase';
+import FireBase from '../utils/FireBase.js';
 
 export const ControllerContext = createContext();
 
