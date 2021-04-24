@@ -202,7 +202,7 @@ export const Home = ({ navigation }) => {
             authPrompt({ useProxy: true, TWITCH_REDIRECT_URI })
                 .then((response) => {
                     validateToken(response.authentication.accessToken);
-                }).catch(() => { console.error('Error generating token') })
+                }).catch((err) => { console.error('Error generating token'); })
         }
         // Disconnect Twitch account
         else {
