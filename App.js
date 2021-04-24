@@ -1,15 +1,18 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, TransitionPresets, CardStyleInterpolators } from '@react-navigation/stack';
+import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { LogBox, StyleSheet } from 'react-native';
 import { Easing } from 'react-native-reanimated';
 import NavBarEditController from './components/NavBarEditController';
 import { ControllerProvider } from './context/ControllerProvider';
-import { Channel, Controller, EditController, Home, Login, SignUp, Splash, Twitch, Welcome } from './screens/Screens';
+import { Channel, Controller, EditController, Home, Login, SignUp, Splash, Welcome } from './screens/Screens';
 
 
 export default function App() {
+  // Added to suppress warning against async functions slowing down Android performance
+  LogBox.ignoreLogs(['Setting a timer']);
+  LogBox.ignoreAllLogs();
 
   const [isLoading, setIsLoading] = React.useState(true);
   const Stack = createStackNavigator();
