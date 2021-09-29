@@ -1,7 +1,7 @@
 # Streller
 Hybrid mobile app designed to increase interactivity for streamers and their viewers by simplifying and improving the chatting experience.
 
-# Streaming Platforms Currently Supported
+### Streaming Platforms Currently Supported
 -**Twitch**
 
 For the sake of development ...
